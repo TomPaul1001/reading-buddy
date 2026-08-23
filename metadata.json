@@ -1,0 +1,6 @@
+{
+  "name": "Reading Buddy",
+  "description": "An interactive reading fluency web app for early readers with word-by-word speech synthesis, profile switching, and wholesome stories.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

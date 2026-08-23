@@ -1,0 +1,436 @@
+import { Story } from '../types';
+
+export const STORIES: Story[] = [
+  {
+    id: 'the-lost-kitten',
+    title: 'The Lost Kitten',
+    icon: '🐱',
+    category: 'Animals',
+    readingLevel: 'Level 1 (Grades K-1)',
+    teaser: 'Mia finds a fluffy surprise hiding behind the garden flowerpot.',
+    colorTheme: {
+      bg: 'bg-rose-50',
+      border: 'border-rose-200',
+      badge: 'bg-rose-100 text-rose-700',
+      accent: 'text-rose-600',
+    },
+    pages: [
+      {
+        text: 'Mia had a sweet kitten named Fluff. Fluff had soft white paws and bright green eyes.',
+        sceneEmoji: '🐾',
+        question: 'What color are Fluff’s paws?',
+      },
+      {
+        text: 'One sunny morning, Fluff ran into the big yard. Mia looked behind the red barn. She looked under the tall oak tree.',
+        sceneEmoji: '🌳',
+        question: 'Where did Mia look first?',
+      },
+      {
+        text: 'Mia heard a tiny meow near the yellow flowers. A little pink nose poked out from a clay pot.',
+        sceneEmoji: '🌸',
+        question: 'What made the tiny sound?',
+      },
+      {
+        text: '“There you are!” Mia cheered with a warm hug. Fluff purred happily all the way back home for warm milk.',
+        sceneEmoji: '🥛',
+        question: 'What treat did Fluff get at home?',
+      },
+    ],
+  },
+  {
+    id: 'bramble-the-brave-bear',
+    title: 'Bramble the Brave Bear',
+    icon: '🐻',
+    category: 'Adventure',
+    readingLevel: 'Level 1 (Grades K-1)',
+    teaser: 'A little brown bear searches the forest for sweet golden honey.',
+    colorTheme: {
+      bg: 'bg-amber-50',
+      border: 'border-amber-200',
+      badge: 'bg-amber-100 text-amber-800',
+      accent: 'text-amber-700',
+    },
+    pages: [
+      {
+        text: 'Bramble was a curious little cub. He loved listening to the river hum songbirds.',
+        sceneEmoji: '🌲',
+        question: 'Who is Bramble?',
+      },
+      {
+        text: 'His tummy gave a loud rumble. “Time for a yummy snack,” Bramble said with a wide smile.',
+        sceneEmoji: '🍯',
+        question: 'Why did Bramble’s tummy rumble?',
+      },
+      {
+        text: 'He followed a friendly buzzing bee up a rocky hill. High in a hollow log sat fresh honey.',
+        sceneEmoji: '🐝',
+        question: 'Who did Bramble follow?',
+      },
+      {
+        text: 'Bramble shared his sweet treat with mother bear. It had been a grand forest adventure.',
+        sceneEmoji: '✨',
+        question: 'Who did he share his honey with?',
+      },
+    ],
+  },
+  {
+    id: 'sams-red-scooter',
+    title: "Sam's Red Scooter",
+    icon: '🛴',
+    category: 'Everyday Life',
+    readingLevel: 'Level 1 (Grades K-1)',
+    teaser: 'Sam straps on his blue helmet and learns to zoom across the sidewalk.',
+    colorTheme: {
+      bg: 'bg-red-50',
+      border: 'border-red-200',
+      badge: 'bg-red-100 text-red-700',
+      accent: 'text-red-600',
+    },
+    pages: [
+      {
+        text: 'Sam got a shiny red scooter for his birthday. It had two glowing wheels and a silver bell.',
+        sceneEmoji: '🎁',
+        question: 'What color was Sam’s scooter?',
+      },
+      {
+        text: 'He snapped his blue helmet on tight. “Push and glide!” called his sister Maya from the porch.',
+        sceneEmoji: '🪖',
+        question: 'What color was his helmet?',
+      },
+      {
+        text: 'Sam pushed with his left foot. The cool wind tickled his cheeks as he zipped down the smooth path.',
+        sceneEmoji: '💨',
+        question: 'How did the wind feel?',
+      },
+      {
+        text: 'Ring, ring went the bell at the park gate. Sam was proud of his new riding skill.',
+        sceneEmoji: '🔔',
+        question: 'Where did Sam ride his scooter?',
+      },
+    ],
+  },
+  {
+    id: 'the-magic-paintbrush',
+    title: 'The Magic Paintbrush',
+    icon: '🎨',
+    category: 'Magic & Fun',
+    readingLevel: 'Level 2 (Grades 1-2)',
+    teaser: 'Lily paints a bright sunflower and something truly wonderful happens.',
+    colorTheme: {
+      bg: 'bg-violet-50',
+      border: 'border-violet-200',
+      badge: 'bg-violet-100 text-violet-700',
+      accent: 'text-violet-600',
+    },
+    pages: [
+      {
+        text: 'Lily found an old wooden brush in her art box. The golden bristles sparkled like starlight.',
+        sceneEmoji: '🖌️',
+        question: 'What was special about the bristles?',
+      },
+      {
+        text: 'She dipped the brush in sunny yellow paint. On her paper, she drew a giant blooming flower.',
+        sceneEmoji: '🌻',
+        question: 'What color did Lily dip her brush in?',
+      },
+      {
+        text: 'Suddenly, the painted flower lifted off the paper! A sweet scent filled the quiet room.',
+        sceneEmoji: '✨',
+        question: 'What happened to the painted flower?',
+      },
+      {
+        text: 'Two colorful butterflies fluttered around the petal. Lily smiled and reached for her blue paint next.',
+        sceneEmoji: '🦋',
+        question: 'What came to visit the flower?',
+      },
+    ],
+  },
+  {
+    id: 'barnaby-the-space-dog',
+    title: 'Barnaby the Space Dog',
+    icon: '🚀',
+    category: 'Adventure',
+    readingLevel: 'Level 2 (Grades 1-2)',
+    teaser: 'A playful puppy wears a silver cardboard helmet and explores the galaxy.',
+    colorTheme: {
+      bg: 'bg-indigo-50',
+      border: 'border-indigo-200',
+      badge: 'bg-indigo-100 text-indigo-700',
+      accent: 'text-indigo-600',
+    },
+    pages: [
+      {
+        text: 'Barnaby was a golden dog who loved looking at the night sky. He barked at the glowing full moon.',
+        sceneEmoji: '🌌',
+        question: 'What did Barnaby bark at?',
+      },
+      {
+        text: 'Leo built a spaceship from a large cardboard box. He gave Barnaby a shiny tin foil badge.',
+        sceneEmoji: '📦',
+        question: 'What did Leo build?',
+      },
+      {
+        text: '“Countdown in three, two, one, blast off!” shouted Leo. Together they zoomed past giant pillow planets.',
+        sceneEmoji: '🪐',
+        question: 'What were the planets made of?',
+      },
+      {
+        text: 'They landed safely on the cozy couch moon. Barnaby wagged his tail and curled up for space naptime.',
+        sceneEmoji: '💤',
+        question: 'Where did the space explorers land?',
+      },
+    ],
+  },
+  {
+    id: 'a-rainy-day-castle',
+    title: 'A Rainy Day Castle',
+    icon: '🏰',
+    category: 'Everyday Life',
+    readingLevel: 'Level 1 (Grades K-1)',
+    teaser: 'Raindrops tap on the window, so Noah and Zoe build an indoor kingdom.',
+    colorTheme: {
+      bg: 'bg-sky-50',
+      border: 'border-sky-200',
+      badge: 'bg-sky-100 text-sky-700',
+      accent: 'text-sky-600',
+    },
+    pages: [
+      {
+        text: 'Rain tapped softly against the bedroom glass. Noah and Zoe could not play outside today.',
+        sceneEmoji: '🌧️',
+        question: 'Why could Noah and Zoe not go outside?',
+      },
+      {
+        text: '“Let us make a blanket castle!” Noah said. They gathered warm quilts and wooden chairs.',
+        sceneEmoji: '🛋️',
+        question: 'What did they build with quilts and chairs?',
+      },
+      {
+        text: 'Zoe hung a flashlight from the center cushion. The inside glowed like a magical secret cave.',
+        sceneEmoji: '🔦',
+        question: 'How did they light the castle?',
+      },
+      {
+        text: 'Mom brought in cups of warm cocoa. Rainy days could be the most fun of all.',
+        sceneEmoji: '☕',
+        question: 'What warm drink did Mom bring?',
+      },
+    ],
+  },
+  {
+    id: 'oliver-owls-glasses',
+    title: "Oliver Owl's Glasses",
+    icon: '🦉',
+    category: 'Animals',
+    readingLevel: 'Level 2 (Grades 1-2)',
+    teaser: 'Oliver the owl gets round purple frames and sees the forest with sharp eyes.',
+    colorTheme: {
+      bg: 'bg-teal-50',
+      border: 'border-teal-200',
+      badge: 'bg-teal-100 text-teal-700',
+      accent: 'text-teal-600',
+    },
+    pages: [
+      {
+        text: 'Oliver was a young owl who loved reading book scrolls. But the small letters looked fuzzy.',
+        sceneEmoji: '📖',
+        question: 'Why was reading hard for Oliver?',
+      },
+      {
+        text: 'Doctor Badger gave him round purple spectacles. Oliver placed them gently upon his beak.',
+        sceneEmoji: '👓',
+        question: 'What color spectacles did Oliver get?',
+      },
+      {
+        text: '“Hoot hoot!” Oliver gasped with joy. Every green leaf and tiny pinecone was super crisp and clear.',
+        sceneEmoji: '🌲',
+        question: 'What could Oliver see clearly now?',
+      },
+      {
+        text: 'That evening, Oliver read bedtime tales to all his woodland friends under the starry sky.',
+        sceneEmoji: '🌙',
+        question: 'Who did Oliver read bedtime stories to?',
+      },
+    ],
+  },
+  {
+    id: 'pippins-big-jump',
+    title: "Pippin's Big Jump",
+    icon: '🐸',
+    category: 'Nature',
+    readingLevel: 'Level 1 (Grades K-1)',
+    teaser: 'A tiny green tree frog takes a brave leap across the water lily pads.',
+    colorTheme: {
+      bg: 'bg-emerald-50',
+      border: 'border-emerald-200',
+      badge: 'bg-emerald-100 text-emerald-800',
+      accent: 'text-emerald-700',
+    },
+    pages: [
+      {
+        text: 'Pippin was a little green tree frog. He sat upon a round lily pad in the quiet pond.',
+        sceneEmoji: '🪷',
+        question: 'Where did Pippin sit?',
+      },
+      {
+        text: 'The next pad looked very far away. Pippin took a deep breath and wiggled his toes.',
+        sceneEmoji: '🌊',
+        question: 'How did Pippin get ready to jump?',
+      },
+      {
+        text: 'Ribbit! Pippin leaped high into the warm air like a flying green acrobat.',
+        sceneEmoji: '🤸',
+        question: 'What sound did Pippin make?',
+      },
+      {
+        text: 'Splash! He landed right in the middle of the pad. All the dragonflies clapped their shiny wings.',
+        sceneEmoji: '👏',
+        question: 'Who clapped for Pippin?',
+      },
+    ],
+  },
+  {
+    id: 'the-secret-berry-pie',
+    title: 'The Secret Berry Pie',
+    icon: '🥧',
+    category: 'Everyday Life',
+    readingLevel: 'Level 2 (Grades 1-2)',
+    teaser: 'Hazel the squirrel and Pip the hedgehog bake a delicious autumn berry pie.',
+    colorTheme: {
+      bg: 'bg-orange-50',
+      border: 'border-orange-200',
+      badge: 'bg-orange-100 text-orange-800',
+      accent: 'text-orange-700',
+    },
+    pages: [
+      {
+        text: 'Hazel the squirrel found ripe blackberries along the mossy stone wall. Pip the hedgehog rolled over a bowl.',
+        sceneEmoji: '🫐',
+        question: 'What kind of berries did Hazel find?',
+      },
+      {
+        text: 'They mixed flour, cinnamon, and sweet berries inside a clay baking dish. The kitchen smelled wonderful.',
+        sceneEmoji: '🥣',
+        question: 'What spices did they mix in?',
+      },
+      {
+        text: 'They placed the pie inside the warm brick oven. Soon, a golden brown crust began to bubble.',
+        sceneEmoji: '🔥',
+        question: 'Where did they bake the pie?',
+      },
+      {
+        text: 'They shared the warm pie slices with the meadow rabbits. It was the sweetest harvest afternoon.',
+        sceneEmoji: '🐰',
+        question: 'Who did they invite for a slice?',
+      },
+    ],
+  },
+  {
+    id: 'captain-coras-treasure',
+    title: "Captain Cora's Treasure",
+    icon: '🏴‍☠️',
+    category: 'Adventure',
+    readingLevel: 'Level 2 (Grades 1-2)',
+    teaser: 'Captain Cora digs in the sandbox and finds a sparkling secret stone.',
+    colorTheme: {
+      bg: 'bg-yellow-50',
+      border: 'border-yellow-200',
+      badge: 'bg-yellow-100 text-yellow-800',
+      accent: 'text-yellow-700',
+    },
+    pages: [
+      {
+        text: 'Captain Cora wore a paper pirate hat. Her wooden ship sailed across the sandy school playground.',
+        sceneEmoji: '⚓',
+        question: 'What kind of hat did Cora wear?',
+      },
+      {
+        text: 'She held a treasure map drawn in purple crayon. “X marks the spot by the red slide!” she called.',
+        sceneEmoji: '🗺️',
+        question: 'What color was the crayon on the map?',
+      },
+      {
+        text: 'Cora dug carefully with her yellow plastic shovel. Her shovel clinked against something hard.',
+        sceneEmoji: '🏖️',
+        question: 'What color was Cora’s shovel?',
+      },
+      {
+        text: 'She lifted a smooth crystal pebble that shone in the sun. “A pirate treasure!” Cora cheered proudly.',
+        sceneEmoji: '💎',
+        question: 'What did Cora find in the sand?',
+      },
+    ],
+  },
+  {
+    id: 'sunny-the-solar-robot',
+    title: 'Sunny the Solar Robot',
+    icon: '🤖',
+    category: 'Magic & Fun',
+    readingLevel: 'Level 1 (Grades K-1)',
+    teaser: 'A helpful little robot charges in the morning sun and plants seeds in the park.',
+    colorTheme: {
+      bg: 'bg-cyan-50',
+      border: 'border-cyan-200',
+      badge: 'bg-cyan-100 text-cyan-800',
+      accent: 'text-cyan-700',
+    },
+    pages: [
+      {
+        text: 'Sunny was a friendly silver robot with round blinking blue lights. He lived in the city greenhouse.',
+        sceneEmoji: '🌱',
+        question: 'Where did Sunny live?',
+      },
+      {
+        text: 'When the golden morning sun rose, Sunny’s solar panel energized. Beep beep went his happy motor!',
+        sceneEmoji: '☀️',
+        question: 'What powered Sunny’s motor?',
+      },
+      {
+        text: 'Sunny watered the baby tomato plants with his gentle mist nozzle. The green leaves stretched tall.',
+        sceneEmoji: '🍅',
+        question: 'What plants did Sunny water?',
+      },
+      {
+        text: 'The garden children waved and gave Sunny a shiny flower sticker. Sunny beeped a cheerful tune.',
+        sceneEmoji: '🎵',
+        question: 'What did the children give Sunny?',
+      },
+    ],
+  },
+  {
+    id: 'the-great-treehouse-club',
+    title: 'The Great Treehouse Club',
+    icon: '🏡',
+    category: 'Adventure',
+    readingLevel: 'Level 2 (Grades 1-2)',
+    teaser: 'Three friends build a flag and create a secret password for their lookout.',
+    colorTheme: {
+      bg: 'bg-lime-50',
+      border: 'border-lime-200',
+      badge: 'bg-lime-100 text-lime-800',
+      accent: 'text-lime-700',
+    },
+    pages: [
+      {
+        text: 'Maya, Ben, and Leo climbed the sturdy wooden rope ladder into the great maple treehouse.',
+        sceneEmoji: '🪜',
+        question: 'How did the friends climb up?',
+      },
+      {
+        text: 'They hung a green flag that said “Adventure Club”. Everyone needed a secret code word to enter.',
+        sceneEmoji: '🚩',
+        question: 'What did the flag say?',
+      },
+      {
+        text: 'Ben looked through his brass telescope. He spotted bluebirds building a nest in the willow tree.',
+        sceneEmoji: '🔭',
+        question: 'What did Ben see through his telescope?',
+      },
+      {
+        text: 'They ate crunchy apples together as the golden sunset lit the sky. It was the best secret club ever.',
+        sceneEmoji: '🍎',
+        question: 'What snack did the friends enjoy?',
+      },
+    ],
+  },
+];

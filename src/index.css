@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #FFF9F0;
+    color: #4A4A4A;
+    font-family: 'Lexend', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    letter-spacing: 0.02em;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1, h2, h3, .font-heading {
+    font-family: 'Fredoka', 'Lexend', system-ui, sans-serif;
+  }
+}
+
+.font-lexend {
+  font-family: 'Lexend', sans-serif;
+}
+
+.font-fredoka {
+  font-family: 'Fredoka', sans-serif;
+}
+
+.font-comic {
+  font-family: 'Comic Neue', cursive, sans-serif;
+}
+
+/* Artistic Flair Palette Classes & Tactile 3D Buttons */
+.btn-tactile-blue {
+  background-color: #4D96FF;
+  color: #FFFFFF;
+  box-shadow: 0 6px 0 #2D76DF;
+  transition: all 0.15s ease;
+}
+.btn-tactile-blue:hover {
+  background-color: #3b87f5;
+}
+.btn-tactile-blue:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #2D76DF;
+}
+
+.btn-tactile-green {
+  background-color: #6BCB77;
+  color: #FFFFFF;
+  box-shadow: 0 6px 0 #4EAF5B;
+  transition: all 0.15s ease;
+}
+.btn-tactile-green:hover {
+  background-color: #5bbd67;
+}
+.btn-tactile-green:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #4EAF5B;
+}
+
+.btn-tactile-yellow {
+  background-color: #FFD93D;
+  color: #4A4A4A;
+  box-shadow: 0 6px 0 #D4A017;
+  transition: all 0.15s ease;
+}
+.btn-tactile-yellow:hover {
+  background-color: #f7ce2e;
+}
+.btn-tactile-yellow:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #D4A017;
+}
+
+.btn-tactile-red {
+  background-color: #FF6B6B;
+  color: #FFFFFF;
+  box-shadow: 0 6px 0 #DF4B4B;
+  transition: all 0.15s ease;
+}
+.btn-tactile-red:hover {
+  background-color: #f85757;
+}
+.btn-tactile-red:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #DF4B4B;
+}
+
+/* Animations */
+@keyframes soft-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse-highlight {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.animate-soft-bounce {
+  animation: soft-bounce 2.5s ease-in-out infinite;
+}
+
+.animate-word-active {
+  animation: pulse-highlight 0.3s ease-out;
+}
+
