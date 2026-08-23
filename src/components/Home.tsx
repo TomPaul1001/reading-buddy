@@ -10,17 +10,20 @@ import {
   Layers,
   Award,
   Search,
+  Pencil,
 } from 'lucide-react';
 import { Profile, Story, ReadingProgress } from '../types';
 import { STORIES } from '../data/stories';
 import { StoryCard } from './StoryCard';
 import { getProgress, getCompletedStories } from '../utils/progress';
+import { APP_VERSION } from '../version';
 
 interface HomeProps {
   profile: Profile;
   onSelectStory: (story: Story, pageIndex?: number) => void;
   onSwitchReader: () => void;
   onAddNewReader: () => void;
+  onEditProfile?: () => void;
 }
 
 export const Home: React.FC<HomeProps> = ({
@@ -28,6 +31,7 @@ export const Home: React.FC<HomeProps> = ({
   onSelectStory,
   onSwitchReader,
   onAddNewReader,
+  onEditProfile,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -77,9 +81,14 @@ export const Home: React.FC<HomeProps> = ({
               📖
             </div>
             <div>
-              <span className="font-heading text-xl sm:text-2xl font-black text-[#4A4A4A] tracking-tight block leading-tight">
-                Reading Buddy
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="font-heading text-xl sm:text-2xl font-black text-[#4A4A4A] tracking-tight block leading-tight">
+                  Reading Buddy
+                </span>
+                <span className="bg-[#FFD93D] text-[#4A4A4A] text-[10px] sm:text-xs font-black px-2 py-0.5 rounded-full border border-amber-300 shadow-2xs">
+                  {APP_VERSION}
+                </span>
+              </div>
               <span className="text-xs font-bold text-[#4D96FF] block">
                 Artistic Fluency Studio
               </span>
@@ -89,7 +98,7 @@ export const Home: React.FC<HomeProps> = ({
           {/* Active Profile Info & Switch Button */}
           <div className="flex items-center gap-2 sm:gap-4">
             {/* Reader Profile Pill */}
-            <div className="flex items-center gap-2.5 bg-white px-4 py-2 rounded-full border-2 border-[#FFD93D] shadow-sm">
+            <div className="flex items-center gap-2.5 bg-white pl-3.5 pr-2 sm:pr-3 py-1.5 rounded-full border-2 border-[#FFD93D] shadow-sm">
               <div className="w-8 h-8 rounded-full bg-[#FF8C8C] flex items-center justify-center text-lg shadow-inner">
                 {profile.avatar}
               </div>
@@ -99,6 +108,18 @@ export const Home: React.FC<HomeProps> = ({
                   {completedStoryIds.length} Stars ⭐
                 </p>
               </div>
+
+              {onEditProfile && (
+                <button
+                  type="button"
+                  id="edit-active-profile-btn"
+                  onClick={onEditProfile}
+                  title="Edit profile & avatar"
+                  className="p-1.5 rounded-full text-slate-400 hover:text-[#4D96FF] hover:bg-blue-50 transition cursor-pointer"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
 
             <button

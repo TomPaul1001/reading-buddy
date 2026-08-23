@@ -14,6 +14,16 @@ export const STORIES: Story[] = [
       badge: 'bg-rose-100 text-rose-700',
       accent: 'text-rose-600',
     },
+    difficultWords: {
+      kitten: ['kit', 'ten'],
+      morning: ['morn', 'ing'],
+      flowers: ['flow', 'ers'],
+      happily: ['hap', 'pi', 'ly'],
+      yellow: ['yel', 'low'],
+      behind: ['be', 'hind'],
+      flowerpot: ['flow', 'er', 'pot'],
+      surprise: ['sur', 'prise'],
+    },
     pages: [
       {
         text: 'Mia had a sweet kitten named Fluff. Fluff had soft white paws and bright green eyes.',
@@ -49,6 +59,18 @@ export const STORIES: Story[] = [
       border: 'border-amber-200',
       badge: 'bg-amber-100 text-amber-800',
       accent: 'text-amber-700',
+    },
+    difficultWords: {
+      bramble: ['bram', 'ble'],
+      curious: ['cu', 'ri', 'ous'],
+      listening: ['lis', 'ten', 'ing'],
+      songbirds: ['song', 'birds'],
+      rumble: ['rum', 'ble'],
+      friendly: ['friend', 'ly'],
+      buzzing: ['buz', 'zing'],
+      hollow: ['hol', 'low'],
+      adventure: ['ad', 'ven', 'ture'],
+      golden: ['gold', 'en'],
     },
     pages: [
       {
@@ -86,6 +108,15 @@ export const STORIES: Story[] = [
       badge: 'bg-red-100 text-red-700',
       accent: 'text-red-600',
     },
+    difficultWords: {
+      scooter: ['scoot', 'er'],
+      birthday: ['birth', 'day'],
+      glowing: ['glow', 'ing'],
+      silver: ['sil', 'ver'],
+      helmet: ['hel', 'met'],
+      tickled: ['tick', 'led'],
+      sidewalk: ['side', 'walk'],
+    },
     pages: [
       {
         text: 'Sam got a shiny red scooter for his birthday. It had two glowing wheels and a silver bell.',
@@ -121,6 +152,20 @@ export const STORIES: Story[] = [
       border: 'border-violet-200',
       badge: 'bg-violet-100 text-violet-700',
       accent: 'text-violet-600',
+    },
+    difficultWords: {
+      paintbrush: ['paint', 'brush'],
+      sunflower: ['sun', 'flow', 'er'],
+      wonderful: ['won', 'der', 'ful'],
+      wooden: ['wood', 'en'],
+      bristles: ['bris', 'tles'],
+      sparkled: ['spar', 'kled'],
+      starlight: ['star', 'light'],
+      blooming: ['bloom', 'ing'],
+      suddenly: ['sud', 'den', 'ly'],
+      colorful: ['col', 'or', 'ful'],
+      butterflies: ['but', 'ter', 'flies'],
+      fluttered: ['flut', 'tered'],
     },
     pages: [
       {
@@ -158,6 +203,17 @@ export const STORIES: Story[] = [
       badge: 'bg-indigo-100 text-indigo-700',
       accent: 'text-indigo-600',
     },
+    difficultWords: {
+      barnaby: ['bar', 'na', 'by'],
+      cardboard: ['card', 'board'],
+      spaceship: ['space', 'ship'],
+      countdown: ['count', 'down'],
+      together: ['to', 'geth', 'er'],
+      pillow: ['pil', 'low'],
+      planets: ['plan', 'ets'],
+      naptime: ['nap', 'time'],
+      explores: ['ex', 'plores'],
+    },
     pages: [
       {
         text: 'Barnaby was a golden dog who loved looking at the night sky. He barked at the glowing full moon.',
@@ -193,6 +249,18 @@ export const STORIES: Story[] = [
       border: 'border-sky-200',
       badge: 'bg-sky-100 text-sky-700',
       accent: 'text-sky-600',
+    },
+    difficultWords: {
+      bedroom: ['bed', 'room'],
+      outside: ['out', 'side'],
+      blanket: ['blan', 'ket'],
+      castle: ['cas', 'tle'],
+      gathered: ['gath', 'ered'],
+      flashlight: ['flash', 'light'],
+      cushion: ['cush', 'ion'],
+      magical: ['mag', 'i', 'cal'],
+      raindrops: ['rain', 'drops'],
+      kingdom: ['king', 'dom'],
     },
     pages: [
       {
@@ -230,6 +298,16 @@ export const STORIES: Story[] = [
       badge: 'bg-teal-100 text-teal-700',
       accent: 'text-teal-600',
     },
+    difficultWords: {
+      oliver: ['ol', 'i', 'ver'],
+      letters: ['let', 'ters'],
+      spectacles: ['spec', 'ta', 'cles'],
+      gently: ['gent', 'ly'],
+      pinecone: ['pine', 'cone'],
+      evening: ['eve', 'ning'],
+      bedtime: ['bed', 'time'],
+      woodland: ['wood', 'land'],
+    },
     pages: [
       {
         text: 'Oliver was a young owl who loved reading book scrolls. But the small letters looked fuzzy.',
@@ -265,6 +343,14 @@ export const STORIES: Story[] = [
       border: 'border-emerald-200',
       badge: 'bg-emerald-100 text-emerald-800',
       accent: 'text-emerald-700',
+    },
+    difficultWords: {
+      pippin: ['pip', 'pin'],
+      wiggled: ['wig', 'gled'],
+      ribbit: ['rib', 'bit'],
+      acrobat: ['ac', 'ro', 'bat'],
+      middle: ['mid', 'dle'],
+      dragonflies: ['drag', 'on', 'flies'],
     },
     pages: [
       {
@@ -302,6 +388,18 @@ export const STORIES: Story[] = [
       badge: 'bg-orange-100 text-orange-800',
       accent: 'text-orange-700',
     },
+    difficultWords: {
+      squirrel: ['squir', 'rel'],
+      blackberries: ['black', 'ber', 'ries'],
+      hedgehog: ['hedge', 'hog'],
+      cinnamon: ['cin', 'na', 'mon'],
+      wonderful: ['won', 'der', 'ful'],
+      kitchen: ['kitch', 'en'],
+      bubble: ['bub', 'ble'],
+      harvest: ['har', 'vest'],
+      afternoon: ['af', 'ter', 'noon'],
+      delicious: ['de', 'li', 'cious'],
+    },
     pages: [
       {
         text: 'Hazel the squirrel found ripe blackberries along the mossy stone wall. Pip the hedgehog rolled over a bowl.',
@@ -337,6 +435,19 @@ export const STORIES: Story[] = [
       border: 'border-yellow-200',
       badge: 'bg-yellow-100 text-yellow-800',
       accent: 'text-yellow-700',
+    },
+    difficultWords: {
+      captain: ['cap', 'tain'],
+      playground: ['play', 'ground'],
+      treasure: ['trea', 'sure'],
+      crayon: ['cray', 'on'],
+      carefully: ['care', 'ful', 'ly'],
+      plastic: ['plas', 'tic'],
+      shovel: ['shov', 'el'],
+      crystal: ['crys', 'tal'],
+      pebble: ['peb', 'ble'],
+      proudly: ['proud', 'ly'],
+      sparkling: ['spar', 'kling'],
     },
     pages: [
       {
@@ -374,6 +485,17 @@ export const STORIES: Story[] = [
       badge: 'bg-cyan-100 text-cyan-800',
       accent: 'text-cyan-700',
     },
+    difficultWords: {
+      friendly: ['friend', 'ly'],
+      blinking: ['blink', 'ing'],
+      greenhouse: ['green', 'house'],
+      energized: ['en', 'er', 'gized'],
+      tomato: ['to', 'ma', 'to'],
+      nozzle: ['noz', 'zle'],
+      children: ['chil', 'dren'],
+      sticker: ['stick', 'er'],
+      cheerful: ['cheer', 'ful'],
+    },
     pages: [
       {
         text: 'Sunny was a friendly silver robot with round blinking blue lights. He lived in the city greenhouse.',
@@ -409,6 +531,19 @@ export const STORIES: Story[] = [
       border: 'border-lime-200',
       badge: 'bg-lime-100 text-lime-800',
       accent: 'text-lime-700',
+    },
+    difficultWords: {
+      sturdy: ['stur', 'dy'],
+      ladder: ['lad', 'der'],
+      treehouse: ['tree', 'house'],
+      adventure: ['ad', 'ven', 'ture'],
+      everyone: ['ev', 'ery', 'one'],
+      telescope: ['tel', 'e', 'scope'],
+      bluebirds: ['blue', 'birds'],
+      crunchy: ['crunch', 'y'],
+      together: ['to', 'geth', 'er'],
+      sunset: ['sun', 'set'],
+      password: ['pass', 'word'],
     },
     pages: [
       {

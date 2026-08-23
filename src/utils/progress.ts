@@ -64,6 +64,20 @@ export function addProfile(name: string, avatar: string): Profile {
   return newProfile;
 }
 
+export function updateProfile(profileId: string, name: string, avatar: string): Profile | null {
+  const profiles = getProfiles();
+  const index = profiles.findIndex((p) => p.id === profileId);
+  if (index === -1) return null;
+  const updatedProfile: Profile = {
+    ...profiles[index],
+    name: name.trim(),
+    avatar,
+  };
+  profiles[index] = updatedProfile;
+  saveProfiles(profiles);
+  return updatedProfile;
+}
+
 export function deleteProfile(profileId: string): void {
   const profiles = getProfiles().filter((p) => p.id !== profileId);
   saveProfiles(profiles);

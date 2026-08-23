@@ -25,6 +25,7 @@ export interface Story {
   };
   teaser: string;
   pages: StoryPage[];
+  difficultWords?: Record<string, string[]>;
 }
 
 export interface ReadingProgress {
@@ -35,4 +36,4 @@ export interface ReadingProgress {
 
 export type ReadingSpeed = 'slow' | 'normal' | 'fast';
 export type FontSizeMode = 'medium' | 'large' | 'xlarge';
-export type AppView = 'profile-select' | 'profile-create' | 'home' | 'story-reader';
+export type AppView = 'profile-select' | 'profile-create' | 'profile-edit' | 'home' | 'story-reader';

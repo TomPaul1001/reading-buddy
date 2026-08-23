@@ -19,8 +19,9 @@ import {
   BookOpen,
 } from 'lucide-react';
 import { Story, Profile, ReadingSpeed, FontSizeMode } from '../types';
-import { parseWords, useSpeech } from '../hooks/useSpeech';
+import { parseWords, useSpeech, WordToken } from '../hooks/useSpeech';
 import { WordSpan } from './WordSpan';
+import { ChunkDialog } from './ChunkDialog';
 import { saveProgress, markStoryCompleted } from '../utils/progress';
 
 interface StoryReaderProps {
@@ -42,6 +43,11 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
     return Math.min(Math.max(0, initialPageIndex), story.pages.length - 1);
   });
   const [isCompletedModalOpen, setIsCompletedModalOpen] = useState(false);
+  const [activeDifficultWord, setActiveDifficultWord] = useState<{
+    word: string;
+    cleanWord: string;
+    chunks: string[];
+  } | null>(null);
   const [fontSize, setFontSize] = useState<FontSizeMode>('large');
   const [showQuestion, setShowQuestion] = useState(false);
 
@@ -53,6 +59,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
     singleWordActiveIndex,
     speed,
     setSpeed,
+    selectedVoice,
     speakWord,
     readPage,
     pause,
@@ -73,11 +80,28 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   // Handle page turn & progress persistence
   const goToPage = useCallback((newIndex: number) => {
     stop();
+    setActiveDifficultWord(null);
     setShowQuestion(false);
     const clamped = Math.min(Math.max(0, newIndex), totalPages - 1);
     setCurrentPageIndex(clamped);
     saveProgress(profile.id, story.id, clamped);
   }, [totalPages, profile.id, story.id, stop]);
+
+  // Handle word clicking: difficult words open ChunkDialog, others speak aloud
+  const handleWordClick = useCallback((token: WordToken) => {
+    const cleanKey = token.cleanWord.toLowerCase();
+    const chunks = story.difficultWords?.[cleanKey];
+    if (chunks && chunks.length > 0) {
+      stop();
+      setActiveDifficultWord({
+        word: token.word,
+        cleanWord: token.cleanWord,
+        chunks,
+      });
+    } else {
+      speakWord(token.cleanWord, token.id);
+    }
+  }, [story.difficultWords, speakWord, stop]);
 
   // When story is completed on the last page
   const handleFinishStory = () => {
@@ -278,16 +302,22 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
 
             {/* Interactive Word Tokens */}
             <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2.5 max-w-3xl px-2">
-              {parsedWords.map((token) => (
-                <WordSpan
-                  key={token.id}
-                  token={token}
-                  isSpokenInPage={currentWordIndex === token.id}
-                  isSingleSpoken={singleWordActiveIndex === token.id}
-                  onWordClick={(t) => speakWord(t.cleanWord, t.id)}
-                  fontSizeClass={getFontSizeClass()}
-                />
-              ))}
+              {parsedWords.map((token) => {
+                const cleanKey = token.cleanWord.toLowerCase();
+                const isDifficult = Boolean(story.difficultWords?.[cleanKey]);
+
+                return (
+                  <WordSpan
+                    key={token.id}
+                    token={token}
+                    isDifficult={isDifficult}
+                    isSpokenInPage={currentWordIndex === token.id}
+                    isSingleSpoken={singleWordActiveIndex === token.id}
+                    onWordClick={handleWordClick}
+                    fontSizeClass={getFontSizeClass()}
+                  />
+                );
+              })}
             </div>
           </div>
 
@@ -430,6 +460,17 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
           ))}
         </div>
       </footer>
+
+      {/* Word Chunking Dialog */}
+      {activeDifficultWord && (
+        <ChunkDialog
+          word={activeDifficultWord.word}
+          cleanWord={activeDifficultWord.cleanWord}
+          chunks={activeDifficultWord.chunks}
+          selectedVoice={selectedVoice}
+          onClose={() => setActiveDifficultWord(null)}
+        />
+      )}
 
       {/* Celebration Modal */}
       {isCompletedModalOpen && (

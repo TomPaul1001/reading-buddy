@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { UserPlus, Star, Trash2, BookOpen, Sparkles } from 'lucide-react';
+import { UserPlus, Star, Trash2, BookOpen, Pencil } from 'lucide-react';
 import { Profile } from '../types';
 import { getCompletedStories, getProgress, deleteProfile } from '../utils/progress';
+import { APP_NAME, APP_VERSION } from '../version';
 
 interface ProfileSelectProps {
   profiles: Profile[];
   onSelectProfile: (profile: Profile) => void;
+  onEditProfile: (profile: Profile) => void;
   onAddNewReader: () => void;
   onProfilesChanged: () => void;
 }
@@ -13,6 +15,7 @@ interface ProfileSelectProps {
 export const ProfileSelect: React.FC<ProfileSelectProps> = ({
   profiles,
   onSelectProfile,
+  onEditProfile,
   onAddNewReader,
   onProfilesChanged,
 }) => {
@@ -21,6 +24,11 @@ export const ProfileSelect: React.FC<ProfileSelectProps> = ({
   const handleDelete = (profile: Profile, e: React.MouseEvent) => {
     e.stopPropagation();
     setProfileToDelete(profile);
+  };
+
+  const handleEdit = (profile: Profile, e: React.MouseEvent) => {
+    e.stopPropagation();
+    onEditProfile(profile);
   };
 
   const confirmDelete = () => {
@@ -35,14 +43,22 @@ export const ProfileSelect: React.FC<ProfileSelectProps> = ({
     <div className="min-h-screen flex items-center justify-center p-4 sm:p-8 bg-[#FFF9F0] font-sans selection:bg-[#FFD93D]/40">
       <div className="max-w-3xl w-full">
         <div className="text-center mb-8 sm:mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#FFD93D] text-[#4A4A4A] rounded-2xl text-3xl mb-4 shadow-md animate-soft-bounce">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#FFD93D] text-[#4A4A4A] rounded-2xl text-3xl mb-3 shadow-md animate-soft-bounce">
             📖
+          </div>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <span className="text-sm sm:text-base font-black text-[#4D96FF] uppercase tracking-wider">
+              {APP_NAME}
+            </span>
+            <span className="bg-[#FFD93D] text-[#4A4A4A] text-[10px] font-black px-2 py-0.5 rounded-full border border-amber-300">
+              {APP_VERSION}
+            </span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-black font-heading text-[#4A4A4A] tracking-tight">
             Who’s Reading Today?
           </h1>
           <p className="text-base sm:text-lg text-slate-600 mt-2 font-medium">
-            Pick your profile or create a new reader account to continue your story journey!
+            Pick your profile, edit your buddy, or create a new reader account!
           </p>
         </div>
 
@@ -58,15 +74,28 @@ export const ProfileSelect: React.FC<ProfileSelectProps> = ({
                 onClick={() => onSelectProfile(profile)}
                 className="group relative bg-white rounded-[32px] p-6 sm:p-7 border-4 border-[#FFD93D] hover:border-[#4D96FF] shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 cursor-pointer flex flex-col items-center text-center"
               >
-                <button
-                  type="button"
-                  id={`delete-profile-${profile.id}`}
-                  onClick={(e) => handleDelete(profile, e)}
-                  title="Remove profile"
-                  className="absolute top-3 right-3 p-2 rounded-full text-slate-300 hover:text-[#FF6B6B] hover:bg-rose-50 opacity-0 group-hover:opacity-100 transition cursor-pointer"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                {/* Top Action Icons: Edit and Delete */}
+                <div className="absolute top-3 right-3 flex items-center gap-1">
+                  <button
+                    type="button"
+                    id={`edit-profile-${profile.id}`}
+                    onClick={(e) => handleEdit(profile, e)}
+                    title="Edit profile & avatar"
+                    className="p-2 rounded-full text-slate-400 hover:text-[#4D96FF] hover:bg-blue-50 transition cursor-pointer"
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </button>
+
+                  <button
+                    type="button"
+                    id={`delete-profile-${profile.id}`}
+                    onClick={(e) => handleDelete(profile, e)}
+                    title="Remove profile"
+                    className="p-2 rounded-full text-slate-300 hover:text-[#FF6B6B] hover:bg-rose-50 opacity-0 group-hover:opacity-100 transition cursor-pointer"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
 
                 <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#FF8C8C] rounded-full flex items-center justify-center text-4xl sm:text-5xl mb-4 shadow-inner group-hover:scale-105 transition">
                   {profile.avatar}

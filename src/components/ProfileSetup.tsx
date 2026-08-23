@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { Sparkles, User, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Sparkles, User, ArrowRight, ArrowLeft, Check, Edit3 } from 'lucide-react';
 import { Profile } from '../types';
-import { addProfile } from '../utils/progress';
+import { addProfile, updateProfile } from '../utils/progress';
+import { APP_NAME, APP_VERSION } from '../version';
 
 interface ProfileSetupProps {
-  onProfileCreated: (profile: Profile) => void;
+  initialProfile?: Profile | null;
+  onProfileCreated?: (profile: Profile) => void;
+  onProfileUpdated?: (profile: Profile) => void;
   onCancel?: () => void;
   hasExistingProfiles?: boolean;
 }
@@ -25,12 +28,17 @@ const AVATAR_OPTIONS = [
 ];
 
 export const ProfileSetup: React.FC<ProfileSetupProps> = ({
+  initialProfile,
   onProfileCreated,
+  onProfileUpdated,
   onCancel,
   hasExistingProfiles = false,
 }) => {
-  const [name, setName] = useState('');
-  const [selectedAvatar, setSelectedAvatar] = useState(AVATAR_OPTIONS[0].emoji);
+  const isEditing = Boolean(initialProfile);
+  const [name, setName] = useState(initialProfile ? initialProfile.name : '');
+  const [selectedAvatar, setSelectedAvatar] = useState(
+    initialProfile ? initialProfile.avatar : AVATAR_OPTIONS[0].emoji
+  );
   const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -40,8 +48,17 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
       return;
     }
 
-    const created = addProfile(name, selectedAvatar);
-    onProfileCreated(created);
+    if (isEditing && initialProfile) {
+      const updated = updateProfile(initialProfile.id, name, selectedAvatar);
+      if (updated && onProfileUpdated) {
+        onProfileUpdated(updated);
+      }
+    } else {
+      const created = addProfile(name, selectedAvatar);
+      if (onProfileCreated) {
+        onProfileCreated(created);
+      }
+    }
   };
 
   return (
@@ -51,11 +68,21 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
           <div className="inline-flex items-center justify-center w-20 h-20 bg-[#FF8C8C] rounded-full text-4xl mb-4 shadow-inner animate-soft-bounce">
             {selectedAvatar}
           </div>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <span className="text-xs sm:text-sm font-black text-[#4D96FF] uppercase tracking-wider">
+              {APP_NAME}
+            </span>
+            <span className="bg-[#FFD93D] text-[#4A4A4A] text-[10px] font-black px-2 py-0.5 rounded-full border border-amber-300">
+              {APP_VERSION}
+            </span>
+          </div>
           <h1 className="text-3xl sm:text-4xl font-black font-heading text-[#4A4A4A] tracking-tight">
-            Welcome to Reading Buddy!
+            {isEditing ? 'Edit Reader Profile' : `Welcome to ${APP_NAME}!`}
           </h1>
           <p className="text-base sm:text-lg text-slate-600 mt-2 font-medium">
-            Let’s create your reading profile to start reading fun stories!
+            {isEditing
+              ? 'Update your name or pick a new reading buddy icon!'
+              : 'Let’s create your reading profile to start reading fun stories!'}
           </p>
         </div>
 
@@ -118,7 +145,7 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
           </div>
 
           <div className="pt-4 flex flex-col sm:flex-row gap-3">
-            {hasExistingProfiles && onCancel && (
+            {(hasExistingProfiles || isEditing) && onCancel && (
               <button
                 type="button"
                 id="cancel-profile-btn"
@@ -126,17 +153,26 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
                 className="order-2 sm:order-1 px-6 py-4 rounded-2xl border-2 border-slate-300 text-slate-600 font-black hover:bg-slate-100 transition flex items-center justify-center gap-2 cursor-pointer uppercase"
               >
                 <ArrowLeft className="w-5 h-5" />
-                Back
+                Cancel
               </button>
             )}
             <button
               type="submit"
-              id="create-profile-submit-btn"
+              id="save-profile-submit-btn"
               className="order-1 sm:order-2 flex-1 px-8 py-4 rounded-2xl btn-tactile-blue font-black text-xl flex items-center justify-center gap-3 cursor-pointer uppercase"
             >
-              <Sparkles className="w-6 h-6 text-white" />
-              <span>Let’s Read!</span>
-              <ArrowRight className="w-6 h-6" />
+              {isEditing ? (
+                <>
+                  <Check className="w-6 h-6 text-white" />
+                  <span>Save Changes</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-6 h-6 text-white" />
+                  <span>Let’s Read!</span>
+                  <ArrowRight className="w-6 h-6" />
+                </>
+              )}
             </button>
           </div>
         </form>
