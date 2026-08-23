@@ -237,50 +237,50 @@ export const ChunkDialog: React.FC<ChunkDialogProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="chunk-dialog-title"
-      className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-word-active"
+      className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 z-50 animate-word-active"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           handleClose();
         }
       }}
     >
-      <div className="bg-white rounded-[36px] sm:rounded-[48px] p-6 sm:p-10 max-w-xl w-full border-4 sm:border-8 border-[#FFD93D] shadow-2xl relative text-center overflow-hidden">
+      <div className="bg-white rounded-[32px] sm:rounded-[44px] p-5 sm:p-8 max-w-lg w-full max-h-[92dvh] overflow-y-auto border-4 sm:border-8 border-[#FFD93D] shadow-2xl relative text-center">
         {/* Close Button */}
         <button
           type="button"
           id="chunk-dialog-close-btn"
           onClick={handleClose}
           title="Back to story"
-          className="absolute top-4 right-4 sm:top-6 sm:right-6 w-11 h-11 sm:w-13 sm:h-13 bg-[#FF6B6B] hover:bg-[#f85757] text-white rounded-full flex items-center justify-center font-black text-xl sm:text-2xl shadow-md active:scale-95 transition cursor-pointer z-20"
+          className="absolute top-3.5 right-3.5 sm:top-5 sm:right-5 w-10 h-10 sm:w-12 sm:h-12 bg-[#FF6B6B] hover:bg-[#f85757] text-white rounded-full flex items-center justify-center font-black text-lg sm:text-xl shadow-md active:scale-95 transition cursor-pointer z-20"
         >
-          <X className="w-6 h-6" />
+          <X className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
 
         {/* Top Header Badge */}
-        <div className="inline-flex items-center gap-2 bg-[#FFF9E5] border-2 border-[#FFD93D] text-[#D4A017] px-4 py-1.5 rounded-full font-black text-xs sm:text-sm uppercase tracking-wider mb-4 shadow-xs">
-          <Puzzle className="w-4 h-4 text-[#D4A017]" />
+        <div className="inline-flex items-center gap-1.5 bg-[#FFF9E5] border-2 border-[#FFD93D] text-[#D4A017] px-3.5 py-1 rounded-full font-black text-xs sm:text-sm uppercase tracking-wider mb-3 shadow-xs">
+          <Puzzle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D4A017]" />
           <span>Sound It Out!</span>
         </div>
 
         {/* Full Word Display */}
-        <div className="mb-6">
+        <div className="mb-4">
           <h2
             id="chunk-dialog-title"
-            className={`text-4xl sm:text-5xl md:text-6xl font-black font-heading tracking-tight transition-all duration-200 ${
+            className={`text-3xl sm:text-4xl md:text-5xl font-black font-heading tracking-tight transition-all duration-200 ${
               isBlendingFullWord
-                ? 'text-[#4D96FF] scale-110 drop-shadow-md animate-soft-bounce'
+                ? 'text-[#4D96FF] scale-105 drop-shadow-md animate-soft-bounce'
                 : 'text-[#4A4A4A]'
             }`}
           >
             {cleanWord}
           </h2>
-          <p className="text-slate-500 font-bold text-xs sm:text-sm mt-2">
+          <p className="text-slate-500 font-bold text-xs sm:text-sm mt-1.5">
             Tap each piece to sound it out chunk by chunk!
           </p>
         </div>
 
         {/* Chunks Puzzle Pieces Container */}
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 my-6 sm:my-8 px-2">
+        <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5 my-4 sm:my-6 px-1">
           {chunks.map((chunk, idx) => {
             const palette = CHUNK_PALETTES[idx % CHUNK_PALETTES.length];
             const isActive = activeChunkIndex === idx;
@@ -288,7 +288,7 @@ export const ChunkDialog: React.FC<ChunkDialogProps> = ({
             return (
               <React.Fragment key={idx}>
                 {idx > 0 && (
-                  <span className="text-[#FFD93D] font-black text-2xl sm:text-3xl select-none">
+                  <span className="text-[#FFD93D] font-black text-xl sm:text-2xl select-none">
                     •
                   </span>
                 )}
@@ -298,14 +298,14 @@ export const ChunkDialog: React.FC<ChunkDialogProps> = ({
                   id={`chunk-btn-${idx}-${chunk}`}
                   onClick={() => handleChunkClick(chunk, idx)}
                   title={`Hear "${chunk}"`}
-                  className={`relative group px-5 py-3.5 sm:px-7 sm:py-5 rounded-3xl font-black text-2xl sm:text-4xl tracking-wide transition-all duration-150 active:scale-95 cursor-pointer shadow-md border-4 ${
+                  className={`relative group px-4 py-2.5 sm:px-6 sm:py-4 rounded-2xl sm:rounded-3xl font-black text-xl sm:text-3xl tracking-wide transition-all duration-150 active:scale-95 cursor-pointer shadow-md border-3 sm:border-4 ${
                     isActive
-                      ? `${palette.activeBg} ${palette.activeText} border-[#4A4A4A]/20 scale-110 shadow-xl ring-4 ${palette.ring} animate-soft-bounce z-10`
-                      : `${palette.bg} ${palette.text} ${palette.border} hover:scale-105 hover:shadow-lg`
+                      ? `${palette.activeBg} ${palette.activeText} border-[#4A4A4A]/20 scale-105 shadow-xl ring-3 ${palette.ring} animate-soft-bounce z-10`
+                      : `${palette.bg} ${palette.text} ${palette.border} hover:scale-102 hover:shadow-md`
                   }`}
                 >
                   <span className="inline-block">{chunk}</span>
-                  <span className="block text-[10px] sm:text-xs opacity-75 uppercase tracking-wider font-bold mt-0.5">
+                  <span className="block text-[9px] sm:text-[10px] opacity-75 uppercase tracking-wider font-bold mt-0.5">
                     Piece {idx + 1}
                   </span>
                 </button>
@@ -315,17 +315,17 @@ export const ChunkDialog: React.FC<ChunkDialogProps> = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 pt-2">
+        <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
           {/* Read Whole Word (Sound It Out Step by Step) */}
           <button
             type="button"
             id="chunk-sound-out-all-btn"
             onClick={handleReadWholeWordSequence}
-            className={`flex-1 py-3.5 sm:py-4 px-5 rounded-2xl btn-tactile-blue font-black text-base sm:text-lg flex items-center justify-center gap-2 uppercase tracking-wide cursor-pointer transition ${
-              isPlayingSequence ? 'ring-4 ring-[#4D96FF]/50 scale-102' : ''
+            className={`flex-1 py-3 sm:py-3.5 px-4 rounded-2xl btn-tactile-blue font-black text-sm sm:text-base flex items-center justify-center gap-2 uppercase tracking-wide cursor-pointer transition ${
+              isPlayingSequence ? 'ring-3 ring-[#4D96FF]/50 scale-102' : ''
             }`}
           >
-            <Volume2 className="w-5 h-5" />
+            <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />
             <span>Sound It Out</span>
           </button>
 
@@ -334,17 +334,17 @@ export const ChunkDialog: React.FC<ChunkDialogProps> = ({
             type="button"
             id="chunk-say-it-fast-btn"
             onClick={handleSayItFast}
-            className={`flex-1 py-3.5 sm:py-4 px-5 rounded-2xl btn-tactile-green font-black text-base sm:text-lg flex items-center justify-center gap-2 uppercase tracking-wide cursor-pointer transition ${
-              isBlendingFullWord && !isPlayingSequence ? 'ring-4 ring-[#6BCB77]/50 scale-102' : ''
+            className={`flex-1 py-3 sm:py-3.5 px-4 rounded-2xl btn-tactile-green font-black text-sm sm:text-base flex items-center justify-center gap-2 uppercase tracking-wide cursor-pointer transition ${
+              isBlendingFullWord && !isPlayingSequence ? 'ring-3 ring-[#6BCB77]/50 scale-102' : ''
             }`}
           >
-            <Zap className="w-5 h-5" />
+            <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
             <span>Say It Fast</span>
           </button>
         </div>
 
         {/* Back to Story Footer Link */}
-        <div className="mt-5">
+        <div className="mt-4">
           <button
             type="button"
             id="chunk-dialog-back-btn"

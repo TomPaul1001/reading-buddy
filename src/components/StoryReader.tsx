@@ -166,42 +166,42 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
     }
   };
 
-  // Font size class mapping
+  // Font size class mapping - optimized for iPad and tablet readability
   const getFontSizeClass = () => {
     switch (fontSize) {
       case 'medium':
-        return 'text-xl sm:text-2xl leading-relaxed sm:leading-loose';
+        return 'text-lg sm:text-xl md:text-2xl leading-relaxed';
       case 'xlarge':
-        return 'text-3xl sm:text-4xl leading-loose';
+        return 'text-2xl sm:text-3xl md:text-4xl leading-relaxed sm:leading-loose';
       case 'large':
       default:
-        return 'text-2xl sm:text-3xl leading-relaxed sm:leading-loose';
+        return 'text-xl sm:text-2xl md:text-3xl leading-relaxed';
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#FFF9F0] flex flex-col justify-between p-4 sm:p-8 font-sans selection:bg-[#FFD93D]/40">
-      {/* Header */}
-      <header className="max-w-6xl mx-auto w-full flex items-center justify-between gap-4 mb-6 sm:mb-8">
+    <div className="h-screen max-h-[100dvh] min-h-[100dvh] bg-[#FFF9F0] flex flex-col justify-between p-2.5 sm:p-4 md:p-5 lg:p-6 font-sans selection:bg-[#FFD93D]/40 overflow-hidden">
+      {/* Header Bar */}
+      <header className="max-w-5xl mx-auto w-full flex items-center justify-between gap-2 sm:gap-4 shrink-0 mb-2 sm:mb-3">
         {/* Reader Profile Pill */}
-        <div className="flex items-center gap-3 sm:gap-4 bg-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-full border-2 border-[#FFD93D] shadow-sm">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#FF8C8C] rounded-full flex items-center justify-center text-2xl sm:text-3xl shadow-inner">
+        <div className="flex items-center gap-2 sm:gap-3 bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border-2 border-[#FFD93D] shadow-xs">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 bg-[#FF8C8C] rounded-full flex items-center justify-center text-lg sm:text-xl shadow-inner">
             {profile.avatar}
           </div>
           <div className="flex flex-col">
-            <span className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider">
+            <span className="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wider leading-none">
               Reader
             </span>
-            <span className="text-base sm:text-xl font-black text-[#4A4A4A]">
-              {profile.name}’s Buddy
+            <span className="text-xs sm:text-sm md:text-base font-black text-[#4A4A4A] leading-tight">
+              {profile.name}
             </span>
           </div>
         </div>
 
         {/* Action Controls & Settings */}
-        <div className="flex items-center gap-2 sm:gap-4">
+        <div className="flex items-center gap-1.5 sm:gap-3">
           {/* Speed Toggle Pill */}
-          <div className="flex items-center bg-white rounded-full border-2 border-[#FFD93D] p-1 shadow-sm">
+          <div className="flex items-center bg-white rounded-full border-2 border-[#FFD93D] p-0.5 sm:p-1 shadow-xs">
             <button
               type="button"
               id="speed-slow-btn"
@@ -210,9 +210,9 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                 if (isPlaying) stop();
               }}
               title="Slow speed (Turtle)"
-              className={`px-2.5 py-1 rounded-full text-xs sm:text-sm font-bold transition ${
+              className={`px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-bold transition cursor-pointer ${
                 speed === 'slow'
-                  ? 'bg-[#FFD93D] text-[#4A4A4A] shadow-xs'
+                  ? 'bg-[#FFD93D] text-[#4A4A4A] shadow-2xs'
                   : 'text-slate-500 hover:bg-[#FFF9E5]'
               }`}
             >
@@ -226,9 +226,9 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                 if (isPlaying) stop();
               }}
               title="Normal speed (Rabbit)"
-              className={`px-2.5 py-1 rounded-full text-xs sm:text-sm font-bold transition ${
+              className={`px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-bold transition cursor-pointer ${
                 speed === 'normal'
-                  ? 'bg-[#FFD93D] text-[#4A4A4A] shadow-xs'
+                  ? 'bg-[#FFD93D] text-[#4A4A4A] shadow-2xs'
                   : 'text-slate-500 hover:bg-[#FFF9E5]'
               }`}
             >
@@ -242,9 +242,9 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                 if (isPlaying) stop();
               }}
               title="Fast speed (Cheetah)"
-              className={`px-2.5 py-1 rounded-full text-xs sm:text-sm font-bold transition ${
+              className={`px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-bold transition cursor-pointer ${
                 speed === 'fast'
-                  ? 'bg-[#FFD93D] text-[#4A4A4A] shadow-xs'
+                  ? 'bg-[#FFD93D] text-[#4A4A4A] shadow-2xs'
                   : 'text-slate-500 hover:bg-[#FFF9E5]'
               }`}
             >
@@ -260,9 +260,9 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
               setFontSize((prev) => (prev === 'medium' ? 'large' : prev === 'large' ? 'xlarge' : 'medium'));
             }}
             title="Adjust text size"
-            className="bg-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-full border-2 border-[#4D96FF] text-[#4D96FF] font-bold text-xs sm:text-sm shadow-sm hover:bg-[#F0F7FF] transition cursor-pointer flex items-center gap-1"
+            className="bg-white px-2.5 sm:px-3 py-1.5 rounded-full border-2 border-[#4D96FF] text-[#4D96FF] font-bold text-xs sm:text-sm shadow-xs hover:bg-[#F0F7FF] transition cursor-pointer flex items-center gap-1"
           >
-            <Type className="w-4 h-4" />
+            <Type className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             <span>{fontSize === 'medium' ? 'A' : fontSize === 'large' ? 'A+' : 'A++'}</span>
           </button>
 
@@ -275,33 +275,32 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
               onBackToHome();
             }}
             title="Back to Library"
-            className="bg-[#FF6B6B] hover:bg-[#f85757] w-11 h-11 sm:w-13 sm:h-13 rounded-full flex items-center justify-center text-white text-xl sm:text-2xl shadow-md active:scale-95 transition cursor-pointer"
+            className="bg-[#FF6B6B] hover:bg-[#f85757] w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center text-white text-base sm:text-xl shadow-md active:scale-95 transition cursor-pointer"
           >
             ✕
           </button>
         </div>
       </header>
 
-      {/* Main Content Layout */}
-      <div className="max-w-6xl mx-auto w-full flex-1 flex flex-col lg:flex-row gap-6 sm:gap-8 items-stretch my-auto">
-        {/* Central Story Stage Card */}
-        <section className="flex-[3] bg-white rounded-[36px] sm:rounded-[48px] border-4 sm:border-8 border-[#FFD93D] shadow-2xl p-6 sm:p-12 flex flex-col items-center justify-between relative min-h-[480px]">
+      {/* Main Story Stage Card */}
+      <div className="max-w-5xl mx-auto w-full flex-1 min-h-0 flex flex-col items-center justify-between">
+        <section className="w-full h-full flex flex-col items-center justify-between bg-white rounded-[24px] sm:rounded-[36px] md:rounded-[44px] border-4 sm:border-6 md:border-8 border-[#FFD93D] shadow-xl p-3.5 sm:p-5 md:p-6 relative min-h-0">
           {/* Floating Story Title Badge */}
-          <div className="absolute -top-5 sm:-top-6 left-6 sm:left-12 bg-[#4D96FF] text-white px-6 sm:px-8 py-2 rounded-2xl font-black text-base sm:text-lg shadow-md flex items-center gap-2">
+          <div className="absolute -top-3.5 sm:-top-4.5 left-4 sm:left-8 bg-[#4D96FF] text-white px-3.5 sm:px-5 py-1 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm md:text-base shadow-md flex items-center gap-1.5 sm:gap-2">
             <span>{story.icon}</span>
             <span>{story.title}</span>
           </div>
 
-          {/* Center Illustration & Words */}
-          <div className="flex-1 flex flex-col items-center justify-center w-full my-6">
+          {/* Center Illustration & Words Section */}
+          <div className="flex-1 min-h-0 w-full flex flex-col items-center justify-center my-auto overflow-y-auto px-1">
             {currentPage.sceneEmoji && (
-              <div className="text-6xl sm:text-8xl mb-6 sm:mb-8 animate-soft-bounce select-none">
+              <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-2 sm:mb-3 md:mb-4 animate-soft-bounce select-none shrink-0">
                 {currentPage.sceneEmoji}
               </div>
             )}
 
             {/* Interactive Word Tokens */}
-            <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2.5 max-w-3xl px-2">
+            <div className="flex flex-wrap justify-center items-center gap-1.5 sm:gap-2 md:gap-2.5 max-w-3xl px-1 sm:px-2">
               {parsedWords.map((token) => {
                 const cleanKey = token.cleanWord.toLowerCase();
                 const isDifficult = Boolean(story.difficultWords?.[cleanKey]);
@@ -323,36 +322,37 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
 
           {/* Optional Comprehension Question Bar */}
           {currentPage.question && (
-            <div className="w-full mb-6">
+            <div className="w-full max-w-2xl mt-1.5 sm:mt-2 shrink-0">
               <button
                 type="button"
                 id="question-toggle-btn"
                 onClick={() => setShowQuestion(!showQuestion)}
-                className="w-full py-2.5 px-4 rounded-2xl bg-[#F0F7FF] border-2 border-[#4D96FF]/30 text-[#4D96FF] font-bold text-sm sm:text-base hover:bg-[#E2EFFF] transition flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-1.5 sm:py-2 px-3 sm:px-4 rounded-xl sm:rounded-2xl bg-[#F0F7FF] border-2 border-[#4D96FF]/30 text-[#4D96FF] font-bold text-xs sm:text-sm hover:bg-[#E2EFFF] transition flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <HelpCircle className="w-4 h-4" />
+                <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 <span>{showQuestion ? 'Hide Question' : 'Thinking Question 💭'}</span>
               </button>
               {showQuestion && (
-                <div className="mt-2 p-3.5 rounded-2xl bg-[#FFF9E5] border-2 border-[#FFD93D] text-[#4A4A4A] text-center font-bold text-sm sm:text-base animate-word-active">
+                <div className="mt-1.5 p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-[#FFF9E5] border-2 border-[#FFD93D] text-[#4A4A4A] text-center font-bold text-xs sm:text-sm animate-word-active">
                   {currentPage.question}
                 </div>
               )}
             </div>
           )}
 
-          {/* Navigation Controls Bar */}
-          <div className="w-full flex justify-between items-center mt-4 gap-3">
+          {/* Bottom Navigation Controls Bar */}
+          <div className="w-full flex justify-between items-center mt-2 sm:mt-3 gap-2 sm:gap-4 shrink-0">
             {/* Prev Page Button */}
             <button
               type="button"
               id="prev-page-btn"
               onClick={handlePrev}
               disabled={currentPageIndex === 0}
-              className={`w-14 h-14 sm:w-18 sm:h-18 rounded-full border-4 flex items-center justify-center text-3xl font-black transition cursor-pointer active:scale-95 ${
+              title="Previous Page"
+              className={`w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full border-3 sm:border-4 flex items-center justify-center text-xl sm:text-2xl md:text-3xl font-black transition cursor-pointer active:scale-95 ${
                 currentPageIndex === 0
-                  ? 'border-[#E0E0E0] text-[#E0E0E0] opacity-50 cursor-not-allowed'
-                  : 'border-[#6BCB77] text-[#6BCB77] hover:bg-[#6BCB77] hover:text-white shadow-[0_4px_0_#4EAF5B]'
+                  ? 'border-[#E0E0E0] text-[#E0E0E0] opacity-40 cursor-not-allowed'
+                  : 'border-[#6BCB77] text-[#6BCB77] hover:bg-[#6BCB77] hover:text-white shadow-[0_3px_0_#4EAF5B] sm:shadow-[0_4px_0_#4EAF5B]'
               }`}
             >
               ←
@@ -365,13 +365,13 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                 id="read-page-aloud-btn"
                 onClick={handleReadPageClick}
                 disabled={!isSupported}
-                className={`btn-tactile-blue px-6 sm:px-12 py-3.5 sm:py-5 rounded-3xl text-white text-lg sm:text-2xl font-black transition-all flex items-center justify-center gap-2.5 cursor-pointer uppercase ${
-                  isPlaying ? 'bg-[#FF6B6B] shadow-[0_6px_0_#DF4B4B]' : ''
+                className={`btn-tactile-blue px-4 sm:px-8 md:px-10 py-2.5 sm:py-3.5 md:py-4 rounded-2xl sm:rounded-3xl text-white text-sm sm:text-lg md:text-xl font-black transition-all flex items-center justify-center gap-2 cursor-pointer uppercase ${
+                  isPlaying ? 'bg-[#FF6B6B] shadow-[0_4px_0_#DF4B4B] sm:shadow-[0_6px_0_#DF4B4B]' : ''
                 }`}
               >
                 {isPlaying ? (
                   <>
-                    <Pause className="w-6 h-6" />
+                    <Pause className="w-5 h-5" />
                     <span>Pause</span>
                   </>
                 ) : (
@@ -387,9 +387,9 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                   id="stop-reading-btn"
                   onClick={stop}
                   title="Stop audio"
-                  className="p-3.5 sm:p-4 rounded-2xl bg-white border-2 border-slate-300 text-slate-700 font-bold transition active:scale-95 cursor-pointer"
+                  className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-white border-2 border-slate-300 text-slate-700 font-bold transition active:scale-95 cursor-pointer"
                 >
-                  <RotateCcw className="w-5 h-5" />
+                  <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
               )}
             </div>
@@ -399,51 +399,24 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
               type="button"
               id="next-page-btn"
               onClick={handleNext}
-              className="w-14 h-14 sm:w-18 sm:h-18 rounded-full border-4 border-[#6BCB77] text-[#6BCB77] hover:bg-[#6BCB77] hover:text-white flex items-center justify-center text-3xl font-black shadow-[0_4px_0_#4EAF5B] transition active:scale-95 cursor-pointer"
+              title={isLastPage ? 'Finish Story' : 'Next Page'}
+              className="w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full border-3 sm:border-4 border-[#6BCB77] text-[#6BCB77] hover:bg-[#6BCB77] hover:text-white flex items-center justify-center text-xl sm:text-2xl md:text-3xl font-black shadow-[0_3px_0_#4EAF5B] sm:shadow-[0_4px_0_#4EAF5B] transition active:scale-95 cursor-pointer"
             >
               {isLastPage ? '⭐' : '→'}
             </button>
           </div>
         </section>
-
-        {/* Side Companion Info Widgets (Artistic Flair Layout) */}
-        <aside className="w-full lg:w-64 flex flex-row lg:flex-col gap-4 sm:gap-6">
-          {/* Page Badge */}
-          <div className="bg-[#6BCB77] rounded-[28px] sm:rounded-[32px] p-4 sm:p-6 text-white shadow-lg flex-1 flex flex-col items-center justify-center text-center">
-            <div className="text-3xl sm:text-4xl mb-1 sm:mb-2">🌟</div>
-            <div className="text-xl sm:text-2xl font-black uppercase">
-              PAGE {currentPageIndex + 1}
-            </div>
-            <div className="text-xs sm:text-sm opacity-90 font-bold uppercase tracking-widest">
-              of {totalPages}
-            </div>
-          </div>
-
-          {/* Interactive Tap Tip Widget */}
-          <div className="bg-white rounded-[28px] sm:rounded-[32px] p-4 sm:p-6 border-4 border-[#FFD93D] shadow-lg flex-1 flex flex-col items-center justify-center text-center">
-            <div className="text-3xl sm:text-4xl mb-1 sm:mb-2">👆</div>
-            <div className="text-sm sm:text-base font-bold text-[#4A4A4A] uppercase tracking-wide">
-              Tap Any Word
-            </div>
-            <div className="text-lg sm:text-xl font-black text-[#FF6B6B] mt-0.5">
-              HEAR IT ALOUD
-            </div>
-          </div>
-
-          {/* Reader Cheer Widget */}
-          <div className="bg-[#4D96FF] rounded-[28px] sm:rounded-[32px] p-4 sm:p-6 text-white shadow-lg flex-1 flex flex-col items-center justify-center text-center">
-            <div className="text-3xl sm:text-4xl mb-1 sm:mb-2">📈</div>
-            <div className="text-lg sm:text-xl font-black">Great Job!</div>
-            <div className="text-xs sm:text-sm opacity-90 font-medium">
-              Keep building fluency!
-            </div>
-          </div>
-        </aside>
       </div>
 
-      {/* Footer Page Dots */}
-      <footer className="mt-6 flex justify-center">
-        <div className="flex gap-2.5 sm:gap-3">
+      {/* Footer Navigation Dots & Helper Bar */}
+      <footer className="mt-1.5 sm:mt-2.5 max-w-5xl mx-auto w-full flex items-center justify-between px-2 shrink-0">
+        {/* Left helper tip */}
+        <div className="hidden sm:flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-slate-500 bg-white/70 px-2.5 py-1 rounded-full border border-slate-200">
+          <span>👆 Tap any word to sound it out</span>
+        </div>
+
+        {/* Center Page Dots */}
+        <div className="flex items-center gap-1.5 sm:gap-2 mx-auto sm:mx-0">
           {story.pages.map((_, idx) => (
             <button
               key={idx}
@@ -451,13 +424,20 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
               id={`page-dot-${idx}`}
               onClick={() => goToPage(idx)}
               title={`Page ${idx + 1}`}
-              className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full transition-all cursor-pointer ${
-                idx <= currentPageIndex
-                  ? 'bg-[#6BCB77] scale-110 shadow-xs'
+              className={`w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 rounded-full transition-all cursor-pointer ${
+                idx === currentPageIndex
+                  ? 'bg-[#6BCB77] scale-125 shadow-xs'
+                  : idx < currentPageIndex
+                  ? 'bg-[#6BCB77]/60'
                   : 'bg-gray-300 hover:bg-gray-400'
               }`}
             />
           ))}
+        </div>
+
+        {/* Right Page Count Badge */}
+        <div className="text-[11px] sm:text-xs font-black text-[#4A4A4A] bg-white px-2.5 py-1 rounded-full border border-[#FFD93D] shadow-2xs">
+          Page {currentPageIndex + 1} of {totalPages}
         </div>
       </footer>
 
@@ -475,18 +455,18 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
       {/* Celebration Modal */}
       {isCompletedModalOpen && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-word-active">
-          <div className="bg-white rounded-[40px] p-6 sm:p-10 max-w-lg w-full border-8 border-[#FFD93D] shadow-2xl text-center relative overflow-hidden">
-            <div className="text-7xl mb-3 animate-soft-bounce">🌟</div>
+          <div className="bg-white rounded-[36px] sm:rounded-[40px] p-6 sm:p-10 max-w-lg w-full border-6 sm:border-8 border-[#FFD93D] shadow-2xl text-center relative overflow-hidden">
+            <div className="text-6xl sm:text-7xl mb-3 animate-soft-bounce">🌟</div>
 
-            <h2 className="text-3xl sm:text-4xl font-black font-heading text-[#4A4A4A] mb-2">
+            <h2 className="text-2xl sm:text-4xl font-black font-heading text-[#4A4A4A] mb-2">
               Great Reading, {profile.name}!
             </h2>
 
-            <p className="text-lg text-slate-600 mb-6 font-medium">
+            <p className="text-base sm:text-lg text-slate-600 mb-6 font-medium">
               You completed <span className="font-black text-[#4D96FF]">“{story.title}”</span> and earned a reading star!
             </p>
 
-            <div className="inline-flex items-center gap-2 bg-[#FFF9E5] text-[#D4A017] font-black px-5 py-2.5 rounded-2xl mb-8 border-2 border-[#FFD93D]">
+            <div className="inline-flex items-center gap-2 bg-[#FFF9E5] text-[#D4A017] font-black px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl mb-6 sm:mb-8 border-2 border-[#FFD93D]">
               <CheckCircle2 className="w-5 h-5 text-[#6BCB77]" />
               <span>STORY COMPLETED!</span>
             </div>
@@ -499,7 +479,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                   setIsCompletedModalOpen(false);
                   goToPage(0);
                 }}
-                className="flex-1 py-4 px-5 rounded-2xl border-4 border-[#FFD93D] bg-[#FFF9E5] text-[#D4A017] font-black text-lg hover:bg-[#fff3c4] transition flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-3.5 sm:py-4 px-5 rounded-2xl border-4 border-[#FFD93D] bg-[#FFF9E5] text-[#D4A017] font-black text-base sm:text-lg hover:bg-[#fff3c4] transition flex items-center justify-center gap-2 cursor-pointer"
               >
                 <RotateCcw className="w-5 h-5" />
                 <span>Read Again</span>
@@ -512,7 +492,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                   setIsCompletedModalOpen(false);
                   onBackToHome();
                 }}
-                className="flex-1 py-4 px-5 rounded-2xl btn-tactile-blue font-black text-lg transition flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-3.5 sm:py-4 px-5 rounded-2xl btn-tactile-blue font-black text-base sm:text-lg transition flex items-center justify-center gap-2 cursor-pointer"
               >
                 <BookOpen className="w-5 h-5 text-white" />
                 <span>Pick Story</span>
