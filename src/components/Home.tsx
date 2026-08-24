@@ -46,6 +46,8 @@ export const Home: React.FC<HomeProps> = ({
 
   const categories = [
     'All',
+    'Elephant & Piggie',
+    'Pout-Pout Fish',
     'Animals',
     'Adventure',
     'Magic & Fun',

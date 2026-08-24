@@ -1,6 +1,6 @@
 {
   "name": "Reading Buddy",
-  "description": "Reading Buddy v1.2.0 - An interactive reading fluency web app for early readers with word-by-word speech synthesis, profile switching, and wholesome stories.",
+  "description": "Reading Buddy v1.6.0 - An interactive reading fluency web app for early readers with phonetic syllable chunking, word-by-word speech synthesis, profile switching, Elephant and Piggie, and Pout-Pout Fish stories.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

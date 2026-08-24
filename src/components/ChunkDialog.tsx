@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Volume2, Sparkles, X, Play, RotateCcw, Puzzle, Zap } from 'lucide-react';
+import { getPhoneticChunkSound } from '../utils/phonics';
 
 interface ChunkDialogProps {
   word: string;
@@ -98,11 +99,12 @@ export const ChunkDialog: React.FC<ChunkDialogProps> = ({
 
     setActiveChunkIndex(index);
 
-    const utterance = new SpeechSynthesisUtterance(chunk);
+    const phoneticText = getPhoneticChunkSound(chunk, cleanWord, index, chunks);
+    const utterance = new SpeechSynthesisUtterance(phoneticText);
     if (selectedVoice) {
       utterance.voice = selectedVoice;
     }
-    utterance.rate = 0.8;
+    utterance.rate = 0.75;
     utterance.pitch = 1.05;
 
     utterance.onend = () => {
@@ -134,22 +136,24 @@ export const ChunkDialog: React.FC<ChunkDialogProps> = ({
 
     const playStep = (index: number) => {
       if (index < chunks.length) {
-        // Speak current chunk
+        // Speak current chunk with phonetic sound
         setActiveChunkIndex(index);
         setIsBlendingFullWord(false);
 
-        const utterance = new SpeechSynthesisUtterance(chunks[index]);
+        const currentChunk = chunks[index];
+        const phoneticText = getPhoneticChunkSound(currentChunk, cleanWord, index, chunks);
+        const utterance = new SpeechSynthesisUtterance(phoneticText);
         if (selectedVoice) {
           utterance.voice = selectedVoice;
         }
-        utterance.rate = 0.8;
+        utterance.rate = 0.75;
         utterance.pitch = 1.05;
 
         utterance.onend = () => {
           // Pause between chunks (200ms) before triggering next utterance in queue
           const pauseTimer = window.setTimeout(() => {
             playStep(index + 1);
-          }, 220);
+          }, 240);
           timeoutsRef.current.push(pauseTimer);
         };
 

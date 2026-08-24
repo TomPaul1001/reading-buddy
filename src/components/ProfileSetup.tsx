@@ -103,7 +103,7 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
                   setName(e.target.value);
                   if (error) setError('');
                 }}
-                placeholder="Type your name (e.g., Emma, Liam)..."
+                placeholder="Type your name (e.g., Brie, Liam)..."
                 maxLength={24}
                 autoFocus
                 className="w-full px-5 py-4 text-xl rounded-2xl border-2 border-[#FFD93D] focus:border-[#4D96FF] bg-[#FFF9E5]/50 text-[#4A4A4A] placeholder:text-slate-400 font-bold outline-none transition"
