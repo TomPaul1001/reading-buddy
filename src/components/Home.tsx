@@ -15,6 +15,7 @@ import {
 import { Profile, Story, ReadingProgress } from '../types';
 import { STORIES } from '../data/stories';
 import { StoryCard } from './StoryCard';
+import { Footer } from './Footer';
 import { getProgress, getCompletedStories } from '../utils/progress';
 import { APP_VERSION } from '../version';
 
@@ -275,9 +276,7 @@ export const Home: React.FC<HomeProps> = ({
       </main>
 
       {/* Footer */}
-      <footer className="border-t-2 border-[#FFD93D] bg-white py-5 px-4 text-center text-xs text-[#4A4A4A] font-bold">
-        <p>Reading Buddy • Early Childhood Fluency • Tap words anytime to listen! 🎨</p>
-      </footer>
+      <Footer />
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { Sparkles, User, ArrowRight, ArrowLeft, Check, Edit3 } from 'lucide-reac
 import { Profile } from '../types';
 import { addProfile, updateProfile } from '../utils/progress';
 import { APP_NAME, APP_VERSION } from '../version';
+import { Footer } from './Footer';
 
 interface ProfileSetupProps {
   initialProfile?: Profile | null;
@@ -62,8 +63,9 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-[#FFF9F0] font-sans">
-      <div className="max-w-xl w-full bg-white rounded-[36px] sm:rounded-[44px] p-6 sm:p-10 shadow-2xl border-4 sm:border-8 border-[#FFD93D]">
+    <div className="min-h-screen flex flex-col justify-between bg-[#FFF9F0] font-sans">
+      <div className="flex-1 flex items-center justify-center p-4 sm:p-6">
+        <div className="max-w-xl w-full bg-white rounded-[36px] sm:rounded-[44px] p-6 sm:p-10 shadow-2xl border-4 sm:border-8 border-[#FFD93D]">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-[#FF8C8C] rounded-full text-4xl mb-4 shadow-inner animate-soft-bounce">
             {selectedAvatar}
@@ -178,5 +180,8 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
         </form>
       </div>
     </div>
-  );
+
+    <Footer />
+  </div>
+);
 };

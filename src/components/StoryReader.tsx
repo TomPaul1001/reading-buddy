@@ -22,6 +22,7 @@ import { Story, Profile, ReadingSpeed, FontSizeMode } from '../types';
 import { parseWords, useSpeech, WordToken } from '../hooks/useSpeech';
 import { WordSpan } from './WordSpan';
 import { ChunkDialog } from './ChunkDialog';
+import { LegalModal, LegalDocType } from './LegalModal';
 import { saveProgress, markStoryCompleted } from '../utils/progress';
 
 interface StoryReaderProps {
@@ -50,6 +51,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   } | null>(null);
   const [fontSize, setFontSize] = useState<FontSizeMode>('large');
   const [showQuestion, setShowQuestion] = useState(false);
+  const [legalModalDoc, setLegalModalDoc] = useState<LegalDocType | null>(null);
 
   const {
     isSupported,
@@ -409,10 +411,35 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
       </div>
 
       {/* Footer Navigation Dots & Helper Bar */}
-      <footer className="mt-1.5 sm:mt-2.5 max-w-5xl mx-auto w-full flex items-center justify-between px-2 shrink-0">
-        {/* Left helper tip */}
-        <div className="hidden sm:flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-slate-500 bg-white/70 px-2.5 py-1 rounded-full border border-slate-200">
-          <span>👆 Tap any word to sound it out</span>
+      <footer className="mt-1 sm:mt-2 max-w-5xl mx-auto w-full flex items-center justify-between px-2 shrink-0">
+        {/* Left helper tip & Legal links */}
+        <div className="flex items-center gap-2 text-[10px] sm:text-xs font-bold text-slate-500">
+          <span className="hidden sm:inline bg-white/70 px-2.5 py-0.5 rounded-full border border-slate-200">
+            👆 Tap word to sound out
+          </span>
+          <button
+            type="button"
+            onClick={() => setLegalModalDoc('terms')}
+            className="hover:text-[#4D96FF] hover:underline transition cursor-pointer"
+          >
+            Terms
+          </button>
+          <span>•</span>
+          <button
+            type="button"
+            onClick={() => setLegalModalDoc('privacy')}
+            className="hover:text-[#6BCB77] hover:underline transition cursor-pointer"
+          >
+            Privacy
+          </button>
+          <span>•</span>
+          <button
+            type="button"
+            onClick={() => setLegalModalDoc('disclaimer')}
+            className="hover:text-[#D4A017] hover:underline transition cursor-pointer"
+          >
+            Disclaimer
+          </button>
         </div>
 
         {/* Center Page Dots */}
@@ -451,6 +478,14 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
           onClose={() => setActiveDifficultWord(null)}
         />
       )}
+
+      {/* Legal Information Modal */}
+      <LegalModal
+        isOpen={legalModalDoc !== null}
+        activeDoc={legalModalDoc || 'terms'}
+        onClose={() => setLegalModalDoc(null)}
+        onSelectDoc={(doc) => setLegalModalDoc(doc)}
+      />
 
       {/* Celebration Modal */}
       {isCompletedModalOpen && (

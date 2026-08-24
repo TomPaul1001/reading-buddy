@@ -3,6 +3,7 @@ import { UserPlus, Star, Trash2, BookOpen, Pencil } from 'lucide-react';
 import { Profile } from '../types';
 import { getCompletedStories, getProgress, deleteProfile } from '../utils/progress';
 import { APP_NAME, APP_VERSION } from '../version';
+import { Footer } from './Footer';
 
 interface ProfileSelectProps {
   profiles: Profile[];
@@ -40,8 +41,9 @@ export const ProfileSelect: React.FC<ProfileSelectProps> = ({
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 sm:p-8 bg-[#FFF9F0] font-sans selection:bg-[#FFD93D]/40">
-      <div className="max-w-3xl w-full">
+    <div className="min-h-screen flex flex-col justify-between bg-[#FFF9F0] font-sans selection:bg-[#FFD93D]/40">
+      <div className="flex-1 flex items-center justify-center p-4 sm:p-8">
+        <div className="max-w-3xl w-full">
         <div className="text-center mb-8 sm:mb-10">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-[#FFD93D] text-[#4A4A4A] rounded-2xl text-3xl mb-3 shadow-md animate-soft-bounce">
             📖
@@ -171,5 +173,8 @@ export const ProfileSelect: React.FC<ProfileSelectProps> = ({
         )}
       </div>
     </div>
-  );
+
+    <Footer />
+  </div>
+);
 };
