@@ -91,9 +91,6 @@ export const Home: React.FC<HomeProps> = ({
                   {APP_VERSION}
                 </span>
               </div>
-              <span className="text-xs font-bold text-[#4D96FF] block">
-                Artistic Fluency Studio
-              </span>
             </div>
           </div>
 
