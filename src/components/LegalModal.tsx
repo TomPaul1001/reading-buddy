@@ -1,7 +1,19 @@
-import React, { useEffect } from 'react';
-import { X, ShieldCheck, FileText, AlertCircle, Mail, Globe, Sparkles } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import {
+  X,
+  ShieldCheck,
+  FileText,
+  AlertCircle,
+  Mail,
+  Globe,
+  Sparkles,
+  Check,
+  Copy,
+  ExternalLink,
+  MessageCircle,
+} from 'lucide-react';
 
-export type LegalDocType = 'terms' | 'privacy' | 'disclaimer';
+export type LegalDocType = 'terms' | 'privacy' | 'disclaimer' | 'contact' | 'website';
 
 interface LegalModalProps {
   isOpen: boolean;
@@ -16,6 +28,9 @@ export const LegalModal: React.FC<LegalModalProps> = ({
   onClose,
   onSelectDoc,
 }) => {
+  const [copiedEmail, setCopiedEmail] = useState(false);
+  const [copiedWebsite, setCopiedWebsite] = useState(false);
+
   // Prevent background scrolling when modal is open and handle ESC key
   useEffect(() => {
     if (!isOpen) return;
@@ -35,6 +50,23 @@ export const LegalModal: React.FC<LegalModalProps> = ({
     };
   }, [isOpen, onClose]);
 
+  const copyToClipboard = (text: string, type: 'email' | 'website') => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text);
+      }
+      if (type === 'email') {
+        setCopiedEmail(true);
+        setTimeout(() => setCopiedEmail(false), 2000);
+      } else {
+        setCopiedWebsite(true);
+        setTimeout(() => setCopiedWebsite(false), 2000);
+      }
+    } catch {
+      // Fallback
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -53,12 +85,16 @@ export const LegalModal: React.FC<LegalModalProps> = ({
               {activeDoc === 'terms' && <FileText className="w-5 h-5" />}
               {activeDoc === 'privacy' && <ShieldCheck className="w-5 h-5 text-emerald-700" />}
               {activeDoc === 'disclaimer' && <AlertCircle className="w-5 h-5 text-amber-700" />}
+              {activeDoc === 'contact' && <Mail className="w-5 h-5 text-[#4D96FF]" />}
+              {activeDoc === 'website' && <Globe className="w-5 h-5 text-teal-700" />}
             </div>
             <div>
               <h2 className="text-xl sm:text-2xl font-black font-heading text-[#4A4A4A]">
                 {activeDoc === 'terms' && 'Terms of Service'}
                 {activeDoc === 'privacy' && 'Privacy Policy'}
                 {activeDoc === 'disclaimer' && 'Educational Disclaimer'}
+                {activeDoc === 'contact' && 'Contact Support'}
+                {activeDoc === 'website' && 'About Reading Buddy'}
               </h2>
               <p className="text-xs text-slate-500 font-semibold">
                 Reading Buddy • Student & Parent Guide
@@ -82,7 +118,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
           <button
             type="button"
             onClick={() => onSelectDoc('terms')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black whitespace-nowrap transition cursor-pointer flex items-center gap-1.5 ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black whitespace-nowrap transition cursor-pointer flex items-center gap-1.5 ${
               activeDoc === 'terms'
                 ? 'bg-[#4D96FF] text-white shadow-xs'
                 : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
@@ -95,7 +131,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
           <button
             type="button"
             onClick={() => onSelectDoc('privacy')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black whitespace-nowrap transition cursor-pointer flex items-center gap-1.5 ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black whitespace-nowrap transition cursor-pointer flex items-center gap-1.5 ${
               activeDoc === 'privacy'
                 ? 'bg-[#6BCB77] text-white shadow-xs'
                 : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
@@ -108,7 +144,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
           <button
             type="button"
             onClick={() => onSelectDoc('disclaimer')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black whitespace-nowrap transition cursor-pointer flex items-center gap-1.5 ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black whitespace-nowrap transition cursor-pointer flex items-center gap-1.5 ${
               activeDoc === 'disclaimer'
                 ? 'bg-[#FFD93D] text-slate-900 shadow-xs'
                 : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
@@ -116,6 +152,32 @@ export const LegalModal: React.FC<LegalModalProps> = ({
           >
             <AlertCircle className="w-4 h-4" />
             Disclaimer
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onSelectDoc('contact')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black whitespace-nowrap transition cursor-pointer flex items-center gap-1.5 ${
+              activeDoc === 'contact'
+                ? 'bg-[#4D96FF] text-white shadow-xs'
+                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+            }`}
+          >
+            <Mail className="w-4 h-4" />
+            Contact
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onSelectDoc('website')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black whitespace-nowrap transition cursor-pointer flex items-center gap-1.5 ${
+              activeDoc === 'website'
+                ? 'bg-[#6BCB77] text-white shadow-xs'
+                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+            }`}
+          >
+            <Globe className="w-4 h-4" />
+            Website
           </button>
         </div>
 
@@ -184,15 +246,6 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                 </h3>
                 <p className="text-slate-600">
                   To the fullest extent permitted by law, the developer shall not be liable for any direct, indirect, incidental, or consequential damages resulting from your use or inability to use Reading Buddy, including the loss of saved reading data.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="text-base sm:text-lg font-black text-slate-800 mb-1.5">
-                  6. Termination & Governing Law
-                </h3>
-                <p className="text-slate-600">
-                  We reserve the right to update or discontinue the app at any time without prior notice. These terms are governed by the applicable laws of the user's local jurisdiction.
                 </p>
               </div>
 
@@ -329,6 +382,120 @@ export const LegalModal: React.FC<LegalModalProps> = ({
               </div>
             </div>
           )}
+
+          {/* CONTACT SUPPORT */}
+          {activeDoc === 'contact' && (
+            <div className="space-y-5">
+              <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-4 text-xs sm:text-sm text-blue-900 font-medium">
+                <p className="font-bold text-blue-800 mb-1 flex items-center gap-1.5">
+                  <Mail className="w-4 h-4 text-[#4D96FF]" /> Direct Developer Contact
+                </p>
+                Have a question, feedback, feature idea, or book suggestion? We’d love to hear from you!
+              </div>
+
+              <div className="bg-white border-2 border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-blue-100 text-[#4D96FF] flex items-center justify-center shrink-0">
+                      <Mail className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-black text-slate-800 text-sm">Official Email Address</h4>
+                      <p className="text-slate-500 text-xs">For support, questions, and curriculum feedback</p>
+                      <a
+                        href="mailto:thomas@solinap.io"
+                        className="text-base font-bold text-[#4D96FF] hover:underline"
+                      >
+                        thomas@solinap.io
+                      </a>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard('thomas@solinap.io', 'email')}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer self-start sm:self-center"
+                  >
+                    {copiedEmail ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>Copy Email</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="space-y-2 text-xs sm:text-sm text-slate-600">
+                  <p className="font-bold text-slate-800">How we can help:</p>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>Suggesting new stories and beginner decodables</li>
+                    <li>Reporting word pronunciation or syllable chunking tweaks</li>
+                    <li>Classroom or homeschool adaptation questions</li>
+                    <li>General questions about local browser storage and privacy</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* WEBSITE / ABOUT */}
+          {activeDoc === 'website' && (
+            <div className="space-y-5">
+              <div className="bg-teal-50 border-2 border-teal-200 rounded-2xl p-4 text-xs sm:text-sm text-teal-900 font-medium">
+                <p className="font-bold text-teal-800 mb-1 flex items-center gap-1.5">
+                  <Globe className="w-4 h-4 text-teal-600" /> Project Website & Details
+                </p>
+                Reading Buddy is an open, private, student-first reading fluency companion.
+              </div>
+
+              <div className="bg-white border-2 border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center shrink-0">
+                      <Globe className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-black text-slate-800 text-sm">Website Address</h4>
+                      <p className="text-slate-500 text-xs">Official web home for Reading Buddy</p>
+                      <span className="text-base font-bold text-slate-800">
+                        reading-buddy@solinap.io
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard('reading-buddy@solinap.io', 'website')}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer self-start sm:self-center"
+                  >
+                    {copiedWebsite ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>Copy URL</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="space-y-2 text-xs sm:text-sm text-slate-600">
+                  <p className="font-bold text-slate-800">Core Principles:</p>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Offline & Zero-Tracking:</strong> No accounts, passwords, or cloud data tracking.</li>
+                    <li><strong>Phonics & Syllable Chunking:</strong> Click any word to hear it or sound it out chunk-by-chunk.</li>
+                    <li><strong>Gamified Encouragement:</strong> Earn stars, complete stories, and celebrate reading milestones!</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Modal Footer Action */}
@@ -346,3 +513,4 @@ export const LegalModal: React.FC<LegalModalProps> = ({
     </div>
   );
 };
+

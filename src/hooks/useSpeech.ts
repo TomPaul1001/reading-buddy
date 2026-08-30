@@ -12,6 +12,8 @@ export interface WordToken {
 }
 
 export function parseWords(text: string): WordToken[] {
+  if (!text || typeof text !== 'string') return [];
+
   const words: WordToken[] = [];
   // Split text while preserving indices
   // Match whitespace sequences or words
@@ -19,6 +21,7 @@ export function parseWords(text: string): WordToken[] {
   const rawParts = text.split(/(\s+)/);
 
   for (const part of rawParts) {
+    if (!part) continue;
     if (/^\s+$/.test(part)) {
       charIndex += part.length;
       continue;
@@ -49,7 +52,9 @@ export function parseWords(text: string): WordToken[] {
 }
 
 export function useSpeech() {
-  const [isSupported, setIsSupported] = useState<boolean>(true);
+  const [isSupported, setIsSupported] = useState<boolean>(() => {
+    return typeof window !== 'undefined' && 'speechSynthesis' in window;
+  });
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [currentWordIndex, setCurrentWordIndex] = useState<number | null>(null);
@@ -71,29 +76,42 @@ export function useSpeech() {
     }
 
     const loadVoices = () => {
-      const available = window.speechSynthesis.getVoices();
-      if (available && available.length > 0) {
-        setVoices(available);
-        // Find best natural English voice
-        const englishVoices = available.filter((v) => v.lang.startsWith('en'));
-        const preferred =
-          englishVoices.find((v) => v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Karen') || v.name.includes('Daniel')) ||
-          englishVoices[0] ||
-          available[0];
+      try {
+        if (!window.speechSynthesis) return;
+        const available = window.speechSynthesis.getVoices();
+        if (available && available.length > 0) {
+          setVoices(available);
+          // Find best natural English voice
+          const englishVoices = available.filter((v) => v.lang && v.lang.startsWith('en'));
+          const preferred =
+            englishVoices.find((v) => v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Karen') || v.name.includes('Daniel')) ||
+            englishVoices[0] ||
+            available[0];
 
-        setSelectedVoice(preferred || null);
+          setSelectedVoice(preferred || null);
+        }
+      } catch (err) {
+        console.warn('Speech voice loading error:', err);
       }
     };
 
     loadVoices();
 
-    if (window.speechSynthesis.onvoiceschanged !== undefined) {
-      window.speechSynthesis.onvoiceschanged = loadVoices;
+    try {
+      if (window.speechSynthesis && window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+      }
+    } catch {
+      // Ignored
     }
 
     return () => {
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
+      try {
+        if (typeof window !== 'undefined' && 'speechSynthesis' in window && window.speechSynthesis) {
+          window.speechSynthesis.cancel();
+        }
+      } catch {
+        // Ignored
       }
     };
   }, []);
@@ -112,8 +130,12 @@ export function useSpeech() {
 
   // Stop any ongoing speech
   const stop = useCallback(() => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
+    try {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    } catch (err) {
+      console.warn('SpeechSynthesis cancel error:', err);
     }
     if (fallbackIntervalRef.current) {
       clearInterval(fallbackIntervalRef.current);
@@ -131,7 +153,7 @@ export function useSpeech() {
 
   // Speak a single word
   const speakWord = useCallback((cleanWord: string, wordIndex?: number) => {
-    if (!isSupported || typeof window === 'undefined') return;
+    if (!isSupported || typeof window === 'undefined' || !cleanWord) return;
 
     stop();
 
@@ -139,27 +161,32 @@ export function useSpeech() {
       setSingleWordActiveIndex(wordIndex);
     }
 
-    const utterance = new SpeechSynthesisUtterance(cleanWord);
-    if (selectedVoice) {
-      utterance.voice = selectedVoice;
+    try {
+      const utterance = new SpeechSynthesisUtterance(cleanWord);
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+      }
+      utterance.rate = getRate(speed);
+      utterance.pitch = 1.05; // Slightly friendly, warm pitch for kids
+
+      utterance.onend = () => {
+        setSingleWordActiveIndex(null);
+      };
+
+      utterance.onerror = () => {
+        setSingleWordActiveIndex(null);
+      };
+
+      // Safety timeout in case onend doesn't fire
+      singleTimeoutRef.current = window.setTimeout(() => {
+        setSingleWordActiveIndex(null);
+      }, 1200);
+
+      window.speechSynthesis.speak(utterance);
+    } catch (err) {
+      console.warn('SpeechSynthesis speakWord error:', err);
+      setSingleWordActiveIndex(null);
     }
-    utterance.rate = getRate(speed);
-    utterance.pitch = 1.05; // Slightly friendly, warm pitch for kids
-
-    utterance.onend = () => {
-      setSingleWordActiveIndex(null);
-    };
-
-    utterance.onerror = () => {
-      setSingleWordActiveIndex(null);
-    };
-
-    // Safety timeout in case onend doesn't fire
-    singleTimeoutRef.current = window.setTimeout(() => {
-      setSingleWordActiveIndex(null);
-    }, 1200);
-
-    window.speechSynthesis.speak(utterance);
   }, [isSupported, selectedVoice, speed, getRate, stop]);
 
   // Read entire page aloud with word-by-word boundary tracking
@@ -250,20 +277,35 @@ export function useSpeech() {
     };
 
     utteranceRef.current = utterance;
-    window.speechSynthesis.speak(utterance);
+    try {
+      window.speechSynthesis.speak(utterance);
+    } catch (err) {
+      console.warn('SpeechSynthesis speak error:', err);
+      setIsPlaying(false);
+      setIsPaused(false);
+      setCurrentWordIndex(null);
+    }
   }, [isSupported, selectedVoice, speed, getRate, stop]);
 
   const pause = useCallback(() => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window && isPlaying) {
-      window.speechSynthesis.pause();
-      setIsPaused(true);
+    try {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window && window.speechSynthesis && isPlaying) {
+        window.speechSynthesis.pause();
+        setIsPaused(true);
+      }
+    } catch (err) {
+      console.warn('SpeechSynthesis pause error:', err);
     }
   }, [isPlaying]);
 
   const resume = useCallback(() => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window && isPaused) {
-      window.speechSynthesis.resume();
-      setIsPaused(false);
+    try {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window && window.speechSynthesis && isPaused) {
+        window.speechSynthesis.resume();
+        setIsPaused(false);
+      }
+    } catch (err) {
+      console.warn('SpeechSynthesis resume error:', err);
     }
   }, [isPaused]);
 

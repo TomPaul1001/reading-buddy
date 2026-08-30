@@ -47,6 +47,8 @@ export const Home: React.FC<HomeProps> = ({
 
   const categories = [
     'All',
+    'Unread',
+    'Completed',
     'Elephant & Piggie',
     'Pout-Pout Fish',
     'Animals',
@@ -54,7 +56,6 @@ export const Home: React.FC<HomeProps> = ({
     'Magic & Fun',
     'Everyday Life',
     'Nature',
-    'Completed',
   ];
 
   // Filter stories
@@ -69,6 +70,7 @@ export const Home: React.FC<HomeProps> = ({
     }
 
     if (selectedCategory === 'All') return true;
+    if (selectedCategory === 'Unread') return !completedStoryIds.includes(story.id);
     if (selectedCategory === 'Completed') return completedStoryIds.includes(story.id);
     return story.category === selectedCategory;
   });
@@ -220,6 +222,7 @@ export const Home: React.FC<HomeProps> = ({
                       : 'bg-white hover:bg-[#FFF9E5] text-[#4A4A4A] border-2 border-[#FFD93D]/60'
                   }`}
                 >
+                  {cat === 'Unread' && '📖 '}
                   {cat === 'Completed' && '⭐ '}
                   {cat}
                 </button>

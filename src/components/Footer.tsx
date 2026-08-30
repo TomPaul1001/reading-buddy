@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, FileText, AlertCircle, Sparkles } from 'lucide-react';
+import { ShieldCheck, FileText, AlertCircle, Sparkles, Mail, Globe } from 'lucide-react';
 import { LegalModal, LegalDocType } from './LegalModal';
 import { APP_VERSION } from '../version';
 
@@ -32,10 +32,11 @@ export const Footer: React.FC<FooterProps> = ({ compact = false }) => {
             </p>
           )}
 
-          {/* Legal Links that open Modal Dialogs */}
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 pt-1 text-xs font-bold">
+          {/* Links that open Modal Dialogs */}
+          <div className="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1.5 pt-1 text-xs font-bold">
             <button
               type="button"
+              id="footer-terms-btn"
               onClick={() => setModalDoc('terms')}
               className="text-slate-600 hover:text-[#4D96FF] hover:underline transition cursor-pointer inline-flex items-center gap-1"
             >
@@ -47,6 +48,7 @@ export const Footer: React.FC<FooterProps> = ({ compact = false }) => {
 
             <button
               type="button"
+              id="footer-privacy-btn"
               onClick={() => setModalDoc('privacy')}
               className="text-slate-600 hover:text-[#6BCB77] hover:underline transition cursor-pointer inline-flex items-center gap-1"
             >
@@ -58,11 +60,38 @@ export const Footer: React.FC<FooterProps> = ({ compact = false }) => {
 
             <button
               type="button"
+              id="footer-disclaimer-btn"
               onClick={() => setModalDoc('disclaimer')}
               className="text-slate-600 hover:text-[#D4A017] hover:underline transition cursor-pointer inline-flex items-center gap-1"
             >
               <AlertCircle className="w-3.5 h-3.5 text-[#D4A017]" />
               <span>Disclaimer</span>
+            </button>
+
+            <span className="text-slate-300">•</span>
+
+            <button
+              type="button"
+              id="footer-email-btn"
+              onClick={() => setModalDoc('contact')}
+              className="text-slate-600 hover:text-[#4D96FF] hover:underline transition cursor-pointer inline-flex items-center gap-1"
+              title="Email: thomas@solinap.io"
+            >
+              <Mail className="w-3.5 h-3.5 text-[#4D96FF]" />
+              <span>Email: thomas@solinap.io</span>
+            </button>
+
+            <span className="text-slate-300">•</span>
+
+            <button
+              type="button"
+              id="footer-website-btn"
+              onClick={() => setModalDoc('website')}
+              className="text-slate-600 hover:text-teal-600 hover:underline transition cursor-pointer inline-flex items-center gap-1"
+              title="Website: reading-buddy@solinap.io"
+            >
+              <Globe className="w-3.5 h-3.5 text-teal-600" />
+              <span>Website: reading-buddy@solinap.io</span>
             </button>
           </div>
         </div>
@@ -78,3 +107,4 @@ export const Footer: React.FC<FooterProps> = ({ compact = false }) => {
     </>
   );
 };
+

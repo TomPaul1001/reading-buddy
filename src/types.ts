@@ -16,7 +16,8 @@ export interface Story {
   title: string;
   icon: string;
   category?: 'Elephant & Piggie' | 'Pout-Pout Fish' | 'Animals' | 'Adventure' | 'Magic & Fun' | 'Everyday Life' | 'Nature';
-  readingLevel?: 'Level 1 (Grades K-1)' | 'Level 2 (Grades 1-2)' | 'Level 1 (Mo Willems)' | 'Level 1 (Deborah Diesen)';
+  readingLevel?: 'Level 1 (Grades K-1)' | 'Level 2 (Grades 1-2)' | 'Level 1 (Mo Willems)' | 'Level 1 (Deborah Diesen)' | 'Level 1 (Adam Rubin)' | string;
+  isNew?: boolean;
   colorTheme?: {
     bg: string;
     border: string;

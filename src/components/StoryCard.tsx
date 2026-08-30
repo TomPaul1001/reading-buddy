@@ -32,6 +32,12 @@ export const StoryCard: React.FC<StoryCardProps> = ({
           </div>
 
           <div className="flex flex-col items-end gap-1.5">
+            {story.isNew && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#FFD93D] text-[#4A4A4A] text-xs font-black shadow-2xs border border-amber-300">
+                ✨ NEW
+              </span>
+            )}
+
             {isCompleted && (
               <span className="inline-flex items-center gap-1 px-3.5 py-1 rounded-full bg-[#6BCB77] text-white text-xs font-black shadow-xs">
                 <CheckCircle2 className="w-3.5 h-3.5" />

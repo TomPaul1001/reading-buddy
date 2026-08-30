@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import confetti from 'canvas-confetti';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   Volume2,
   VolumeX,
@@ -33,6 +34,24 @@ interface StoryReaderProps {
   onStoryCompleted?: () => void;
 }
 
+const pageSlideVariants = {
+  enter: (dir: number) => ({
+    x: dir > 0 ? 50 : dir < 0 ? -50 : 0,
+    opacity: 0,
+    scale: 0.98,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+  },
+  exit: (dir: number) => ({
+    x: dir > 0 ? -50 : dir < 0 ? 50 : 0,
+    opacity: 0,
+    scale: 0.98,
+  }),
+};
+
 export const StoryReader: React.FC<StoryReaderProps> = ({
   story,
   initialPageIndex = 0,
@@ -43,6 +62,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(() => {
     return Math.min(Math.max(0, initialPageIndex), story.pages.length - 1);
   });
+  const [direction, setDirection] = useState<number>(0);
   const [isCompletedModalOpen, setIsCompletedModalOpen] = useState(false);
   const [activeDifficultWord, setActiveDifficultWord] = useState<{
     word: string;
@@ -80,14 +100,20 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   }, [currentPage]);
 
   // Handle page turn & progress persistence
-  const goToPage = useCallback((newIndex: number) => {
-    stop();
-    setActiveDifficultWord(null);
-    setShowQuestion(false);
-    const clamped = Math.min(Math.max(0, newIndex), totalPages - 1);
-    setCurrentPageIndex(clamped);
-    saveProgress(profile.id, story.id, clamped);
-  }, [totalPages, profile.id, story.id, stop]);
+  const goToPage = useCallback(
+    (newIndex: number) => {
+      stop();
+      setActiveDifficultWord(null);
+      setShowQuestion(false);
+      const clamped = Math.min(Math.max(0, newIndex), totalPages - 1);
+      if (clamped !== currentPageIndex) {
+        setDirection(clamped > currentPageIndex ? 1 : -1);
+        setCurrentPageIndex(clamped);
+        saveProgress(profile.id, story.id, clamped);
+      }
+    },
+    [currentPageIndex, totalPages, profile.id, story.id, stop]
+  );
 
   // Handle word clicking: difficult words open ChunkDialog, others speak aloud
   const handleWordClick = useCallback((token: WordToken) => {
@@ -293,33 +319,50 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
             <span>{story.title}</span>
           </div>
 
-          {/* Center Illustration & Words Section */}
-          <div className="flex-1 min-h-0 w-full flex flex-col items-center justify-center my-auto overflow-y-auto px-1">
-            {currentPage.sceneEmoji && (
-              <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-2 sm:mb-3 md:mb-4 animate-soft-bounce select-none shrink-0">
-                {currentPage.sceneEmoji}
-              </div>
-            )}
+          {/* Center Illustration & Words Section with subtle digital book slide animation */}
+          <div className="flex-1 min-h-0 w-full flex flex-col items-center justify-center my-auto overflow-hidden relative px-1">
+            <AnimatePresence mode="wait" custom={direction} initial={false}>
+              <motion.div
+                key={currentPageIndex}
+                custom={direction}
+                variants={pageSlideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{
+                  x: { type: 'spring', stiffness: 350, damping: 32 },
+                  opacity: { duration: 0.18 },
+                  scale: { duration: 0.18 },
+                }}
+                className="w-full flex-1 flex flex-col items-center justify-center overflow-y-auto px-1 py-1"
+              >
+                {currentPage.sceneEmoji && (
+                  <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-2 sm:mb-3 md:mb-4 animate-soft-bounce select-none shrink-0">
+                    {currentPage.sceneEmoji}
+                  </div>
+                )}
 
-            {/* Interactive Word Tokens */}
-            <div className="flex flex-wrap justify-center items-center gap-1.5 sm:gap-2 md:gap-2.5 max-w-3xl px-1 sm:px-2">
-              {parsedWords.map((token) => {
-                const cleanKey = token.cleanWord.toLowerCase();
-                const isDifficult = Boolean(story.difficultWords?.[cleanKey]);
+                {/* Interactive Word Tokens */}
+                <div className="flex flex-wrap justify-center items-center gap-1.5 sm:gap-2 md:gap-2.5 max-w-3xl px-1 sm:px-2">
+                  {parsedWords.map((token) => {
+                    const cleanKey = token.cleanWord.toLowerCase();
+                    const isDifficult = Boolean(story.difficultWords?.[cleanKey]);
 
-                return (
-                  <WordSpan
-                    key={token.id}
-                    token={token}
-                    isDifficult={isDifficult}
-                    isSpokenInPage={currentWordIndex === token.id}
-                    isSingleSpoken={singleWordActiveIndex === token.id}
-                    onWordClick={handleWordClick}
-                    fontSizeClass={getFontSizeClass()}
-                  />
-                );
-              })}
-            </div>
+                    return (
+                      <WordSpan
+                        key={token.id}
+                        token={token}
+                        isDifficult={isDifficult}
+                        isSpokenInPage={currentWordIndex === token.id}
+                        isSingleSpoken={singleWordActiveIndex === token.id}
+                        onWordClick={handleWordClick}
+                        fontSizeClass={getFontSizeClass()}
+                      />
+                    );
+                  })}
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           {/* Optional Comprehension Question Bar */}

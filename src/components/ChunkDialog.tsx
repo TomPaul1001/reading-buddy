@@ -65,8 +65,12 @@ export const ChunkDialog: React.FC<ChunkDialogProps> = ({
 
   const stopAllSpeech = useCallback(() => {
     clearAllTimeouts();
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
+    try {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    } catch (err) {
+      console.warn('SpeechSynthesis cancel error:', err);
     }
     setActiveChunkIndex(null);
     setIsBlendingFullWord(false);
@@ -95,42 +99,47 @@ export const ChunkDialog: React.FC<ChunkDialogProps> = ({
   // Speak an individual chunk
   const handleChunkClick = (chunk: string, index: number) => {
     stopAllSpeech();
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    if (typeof window === 'undefined' || !('speechSynthesis' in window) || !window.speechSynthesis) return;
 
     setActiveChunkIndex(index);
 
-    const phoneticText = getPhoneticChunkSound(chunk, cleanWord, index, chunks);
-    const utterance = new SpeechSynthesisUtterance(phoneticText);
-    if (selectedVoice) {
-      utterance.voice = selectedVoice;
-    }
-    utterance.rate = 0.75;
-    utterance.pitch = 1.05;
+    try {
+      const phoneticText = getPhoneticChunkSound(chunk, cleanWord, index, chunks);
+      const utterance = new SpeechSynthesisUtterance(phoneticText);
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+      }
+      utterance.rate = 0.75;
+      utterance.pitch = 1.05;
 
-    utterance.onend = () => {
-      const timer = window.setTimeout(() => {
+      utterance.onend = () => {
+        const timer = window.setTimeout(() => {
+          setActiveChunkIndex(null);
+        }, 200);
+        timeoutsRef.current.push(timer);
+      };
+
+      utterance.onerror = () => {
         setActiveChunkIndex(null);
-      }, 200);
-      timeoutsRef.current.push(timer);
-    };
+      };
 
-    utterance.onerror = () => {
+      // Safety fallback
+      const safetyTimer = window.setTimeout(() => {
+        setActiveChunkIndex(null);
+      }, 1200);
+      timeoutsRef.current.push(safetyTimer);
+
+      window.speechSynthesis.speak(utterance);
+    } catch (err) {
+      console.warn('Chunk speech error:', err);
       setActiveChunkIndex(null);
-    };
-
-    // Safety fallback
-    const safetyTimer = window.setTimeout(() => {
-      setActiveChunkIndex(null);
-    }, 1200);
-    timeoutsRef.current.push(safetyTimer);
-
-    window.speechSynthesis.speak(utterance);
+    }
   };
 
   // Sound out chunk by chunk in sequence, then blend the full word
   const handleReadWholeWordSequence = () => {
     stopAllSpeech();
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    if (typeof window === 'undefined' || !('speechSynthesis' in window) || !window.speechSynthesis) return;
 
     setIsPlayingSequence(true);
 
@@ -140,54 +149,64 @@ export const ChunkDialog: React.FC<ChunkDialogProps> = ({
         setActiveChunkIndex(index);
         setIsBlendingFullWord(false);
 
-        const currentChunk = chunks[index];
-        const phoneticText = getPhoneticChunkSound(currentChunk, cleanWord, index, chunks);
-        const utterance = new SpeechSynthesisUtterance(phoneticText);
-        if (selectedVoice) {
-          utterance.voice = selectedVoice;
-        }
-        utterance.rate = 0.75;
-        utterance.pitch = 1.05;
+        try {
+          const currentChunk = chunks[index];
+          const phoneticText = getPhoneticChunkSound(currentChunk, cleanWord, index, chunks);
+          const utterance = new SpeechSynthesisUtterance(phoneticText);
+          if (selectedVoice) {
+            utterance.voice = selectedVoice;
+          }
+          utterance.rate = 0.75;
+          utterance.pitch = 1.05;
 
-        utterance.onend = () => {
-          // Pause between chunks (200ms) before triggering next utterance in queue
-          const pauseTimer = window.setTimeout(() => {
-            playStep(index + 1);
-          }, 240);
-          timeoutsRef.current.push(pauseTimer);
-        };
+          utterance.onend = () => {
+            // Pause between chunks (200ms) before triggering next utterance in queue
+            const pauseTimer = window.setTimeout(() => {
+              playStep(index + 1);
+            }, 240);
+            timeoutsRef.current.push(pauseTimer);
+          };
 
-        utterance.onerror = () => {
+          utterance.onerror = () => {
+            stopAllSpeech();
+          };
+
+          window.speechSynthesis.speak(utterance);
+        } catch (err) {
+          console.warn('Sequence chunk error:', err);
           stopAllSpeech();
-        };
-
-        window.speechSynthesis.speak(utterance);
+        }
       } else {
         // All chunks finished! Finale: blend the full word together
         setActiveChunkIndex(null);
         setIsBlendingFullWord(true);
 
         const blendTimer = window.setTimeout(() => {
-          const fullWordUtterance = new SpeechSynthesisUtterance(cleanWord);
-          if (selectedVoice) {
-            fullWordUtterance.voice = selectedVoice;
-          }
-          fullWordUtterance.rate = 0.95;
-          fullWordUtterance.pitch = 1.05;
+          try {
+            const fullWordUtterance = new SpeechSynthesisUtterance(cleanWord);
+            if (selectedVoice) {
+              fullWordUtterance.voice = selectedVoice;
+            }
+            fullWordUtterance.rate = 0.95;
+            fullWordUtterance.pitch = 1.05;
 
-          fullWordUtterance.onend = () => {
-            const endTimer = window.setTimeout(() => {
-              setIsBlendingFullWord(false);
-              setIsPlayingSequence(false);
-            }, 300);
-            timeoutsRef.current.push(endTimer);
-          };
+            fullWordUtterance.onend = () => {
+              const endTimer = window.setTimeout(() => {
+                setIsBlendingFullWord(false);
+                setIsPlayingSequence(false);
+              }, 300);
+              timeoutsRef.current.push(endTimer);
+            };
 
-          fullWordUtterance.onerror = () => {
+            fullWordUtterance.onerror = () => {
+              stopAllSpeech();
+            };
+
+            window.speechSynthesis.speak(fullWordUtterance);
+          } catch (err) {
+            console.warn('Sequence blend error:', err);
             stopAllSpeech();
-          };
-
-          window.speechSynthesis.speak(fullWordUtterance);
+          }
         }, 150);
 
         timeoutsRef.current.push(blendTimer);
@@ -200,35 +219,40 @@ export const ChunkDialog: React.FC<ChunkDialogProps> = ({
   // Speak the full word at natural speed
   const handleSayItFast = () => {
     stopAllSpeech();
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    if (typeof window === 'undefined' || !('speechSynthesis' in window) || !window.speechSynthesis) return;
 
     setIsBlendingFullWord(true);
 
-    const utterance = new SpeechSynthesisUtterance(cleanWord);
-    if (selectedVoice) {
-      utterance.voice = selectedVoice;
-    }
-    utterance.rate = 1.0;
-    utterance.pitch = 1.05;
+    try {
+      const utterance = new SpeechSynthesisUtterance(cleanWord);
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+      }
+      utterance.rate = 1.0;
+      utterance.pitch = 1.05;
 
-    utterance.onend = () => {
-      const timer = window.setTimeout(() => {
+      utterance.onend = () => {
+        const timer = window.setTimeout(() => {
+          setIsBlendingFullWord(false);
+        }, 250);
+        timeoutsRef.current.push(timer);
+      };
+
+      utterance.onerror = () => {
         setIsBlendingFullWord(false);
-      }, 250);
-      timeoutsRef.current.push(timer);
-    };
+      };
 
-    utterance.onerror = () => {
+      // Safety fallback
+      const safetyTimer = window.setTimeout(() => {
+        setIsBlendingFullWord(false);
+      }, 1500);
+      timeoutsRef.current.push(safetyTimer);
+
+      window.speechSynthesis.speak(utterance);
+    } catch (err) {
+      console.warn('Say it fast error:', err);
       setIsBlendingFullWord(false);
-    };
-
-    // Safety fallback
-    const safetyTimer = window.setTimeout(() => {
-      setIsBlendingFullWord(false);
-    }, 1500);
-    timeoutsRef.current.push(safetyTimer);
-
-    window.speechSynthesis.speak(utterance);
+    }
   };
 
   const handleClose = () => {

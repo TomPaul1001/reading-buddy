@@ -1,6 +1,6 @@
 {
   "name": "Reading Buddy",
-  "description": "Reading Buddy v1.6.0 - An interactive reading fluency web app for early readers with phonetic syllable chunking, word-by-word speech synthesis, profile switching, Elephant and Piggie, and Pout-Pout Fish stories.",
+  "description": "Reading Buddy v1.7.0 - An interactive reading fluency web app for early readers featuring the complete 25-book Elephant and Piggie series, Dragons Love Tacos, and Pout-Pout Fish stories with phonetic syllable chunking and speech synthesis.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
