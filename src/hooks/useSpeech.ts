@@ -162,6 +162,9 @@ export function useSpeech() {
     }
 
     try {
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
       const utterance = new SpeechSynthesisUtterance(cleanWord);
       if (selectedVoice) {
         utterance.voice = selectedVoice;
@@ -200,84 +203,87 @@ export function useSpeech() {
     setIsPaused(false);
     setCurrentWordIndex(0);
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    if (selectedVoice) {
-      utterance.voice = selectedVoice;
-    }
-    const currentRate = getRate(speed);
-    utterance.rate = currentRate;
-    utterance.pitch = 1.05;
+    try {
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+      const utterance = new SpeechSynthesisUtterance(text);
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+      }
+      const currentRate = getRate(speed);
+      utterance.rate = currentRate;
+      utterance.pitch = 1.05;
 
-    let boundaryReceived = false;
+      let boundaryReceived = false;
 
-    utterance.onboundary = (event) => {
-      boundaryReceived = true;
-      if (event.name === 'word' || event.charIndex !== undefined) {
-        const charIdx = event.charIndex;
-        // Find which token covers this character index
-        const found = parsedWords.find((w) => charIdx >= w.charStart && charIdx <= w.charEnd);
-        if (found) {
-          setCurrentWordIndex(found.id);
-        } else {
-          // Find closest word by charStart
-          let closest = parsedWords[0];
-          let minDiff = Infinity;
-          for (const w of parsedWords) {
-            const diff = Math.abs(w.charStart - charIdx);
-            if (diff < minDiff) {
-              minDiff = diff;
-              closest = w;
+      utterance.onboundary = (event) => {
+        boundaryReceived = true;
+        if (event.name === 'word' || event.charIndex !== undefined) {
+          const charIdx = event.charIndex;
+          // Find which token covers this character index
+          const found = parsedWords.find((w) => charIdx >= w.charStart && charIdx <= w.charEnd);
+          if (found) {
+            setCurrentWordIndex(found.id);
+          } else {
+            // Find closest word by charStart
+            let closest = parsedWords[0];
+            let minDiff = Infinity;
+            for (const w of parsedWords) {
+              const diff = Math.abs(w.charStart - charIdx);
+              if (diff < minDiff) {
+                minDiff = diff;
+                closest = w;
+              }
+            }
+            if (closest) {
+              setCurrentWordIndex(closest.id);
             }
           }
-          if (closest) {
-            setCurrentWordIndex(closest.id);
+        }
+      };
+
+      utterance.onstart = () => {
+        setIsPlaying(true);
+        setIsPaused(false);
+        if (parsedWords.length > 0) {
+          setCurrentWordIndex(0);
+        }
+
+        // Fallback timer in case the browser voice doesn't fire boundary events
+        const approxDurationPerWordMs = 60000 / (130 * currentRate);
+        let fallbackIndex = 0;
+
+        fallbackIntervalRef.current = window.setInterval(() => {
+          if (!boundaryReceived && fallbackIndex < parsedWords.length - 1) {
+            fallbackIndex++;
+            setCurrentWordIndex(fallbackIndex);
           }
+        }, approxDurationPerWordMs);
+      };
+
+      utterance.onend = () => {
+        setIsPlaying(false);
+        setIsPaused(false);
+        setCurrentWordIndex(null);
+        if (fallbackIntervalRef.current) {
+          clearInterval(fallbackIntervalRef.current);
+          fallbackIntervalRef.current = null;
         }
-      }
-    };
+      };
 
-    utterance.onstart = () => {
-      setIsPlaying(true);
-      setIsPaused(false);
-      if (parsedWords.length > 0) {
-        setCurrentWordIndex(0);
-      }
-
-      // Fallback timer in case the browser voice doesn't fire boundary events
-      const approxDurationPerWordMs = (60000 / (130 * currentRate));
-      let fallbackIndex = 0;
-
-      fallbackIntervalRef.current = window.setInterval(() => {
-        if (!boundaryReceived && fallbackIndex < parsedWords.length - 1) {
-          fallbackIndex++;
-          setCurrentWordIndex(fallbackIndex);
+      utterance.onerror = (e) => {
+        console.warn('Speech synthesis error:', e);
+        setIsPlaying(false);
+        setIsPaused(false);
+        setCurrentWordIndex(null);
+        if (fallbackIntervalRef.current) {
+          clearInterval(fallbackIntervalRef.current);
+          fallbackIntervalRef.current = null;
         }
-      }, approxDurationPerWordMs);
-    };
+      };
 
-    utterance.onend = () => {
-      setIsPlaying(false);
-      setIsPaused(false);
-      setCurrentWordIndex(null);
-      if (fallbackIntervalRef.current) {
-        clearInterval(fallbackIntervalRef.current);
-        fallbackIntervalRef.current = null;
-      }
-    };
-
-    utterance.onerror = (e) => {
-      console.warn('Speech synthesis error:', e);
-      setIsPlaying(false);
-      setIsPaused(false);
-      setCurrentWordIndex(null);
-      if (fallbackIntervalRef.current) {
-        clearInterval(fallbackIntervalRef.current);
-        fallbackIntervalRef.current = null;
-      }
-    };
-
-    utteranceRef.current = utterance;
-    try {
+      utteranceRef.current = utterance;
       window.speechSynthesis.speak(utterance);
     } catch (err) {
       console.warn('SpeechSynthesis speak error:', err);

@@ -93,6 +93,29 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   const currentPage = story.pages[currentPageIndex];
   const isLastPage = currentPageIndex === totalPages - 1;
 
+  // Cleanup speech synthesis on unmount
+  useEffect(() => {
+    return () => {
+      stop();
+    };
+  }, [stop]);
+
+  // Helper to find difficult word chunks if any
+  const getDifficultWordChunks = useCallback(
+    (cleanWord: string): string[] | undefined => {
+      if (!story.difficultWords) return undefined;
+      const key = cleanWord.toLowerCase().trim();
+      const strippedKey = key.replace(/['’]s$/, '').replace(/[^a-z]/g, '');
+
+      return (
+        story.difficultWords[key] ||
+        story.difficultWords[strippedKey] ||
+        (story.difficultWords as Record<string, string[]>)[cleanWord.toLowerCase()]
+      );
+    },
+    [story.difficultWords]
+  );
+
   // Parse words on the current page
   const parsedWords = useMemo(() => {
     if (!currentPage) return [];
@@ -117,8 +140,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
 
   // Handle word clicking: difficult words open ChunkDialog, others speak aloud
   const handleWordClick = useCallback((token: WordToken) => {
-    const cleanKey = token.cleanWord.toLowerCase();
-    const chunks = story.difficultWords?.[cleanKey];
+    const chunks = getDifficultWordChunks(token.cleanWord);
     if (chunks && chunks.length > 0) {
       stop();
       setActiveDifficultWord({
@@ -129,10 +151,10 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
     } else {
       speakWord(token.cleanWord, token.id);
     }
-  }, [story.difficultWords, speakWord, stop]);
+  }, [getDifficultWordChunks, speakWord, stop]);
 
   // When story is completed on the last page
-  const handleFinishStory = () => {
+  const handleFinishStory = useCallback(() => {
     stop();
     markStoryCompleted(profile.id, story.id);
     setIsCompletedModalOpen(true);
@@ -166,21 +188,41 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
     if (onStoryCompleted) {
       onStoryCompleted();
     }
-  };
+  }, [profile.id, story.id, stop, onStoryCompleted]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (isLastPage) {
       handleFinishStory();
     } else {
       goToPage(currentPageIndex + 1);
     }
-  };
+  }, [isLastPage, handleFinishStory, goToPage, currentPageIndex]);
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     if (currentPageIndex > 0) {
       goToPage(currentPageIndex - 1);
     }
-  };
+  }, [currentPageIndex, goToPage]);
+
+  // Keyboard navigation for arrow keys and space
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't intercept if a modal or input is active
+      if (activeDifficultWord || isCompletedModalOpen || legalModalDoc !== null) return;
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement)?.tagName)) return;
+
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        handleNext();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        handlePrev();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeDifficultWord, isCompletedModalOpen, legalModalDoc, handleNext, handlePrev]);
 
   const handleReadPageClick = () => {
     if (isPlaying) {
@@ -345,8 +387,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                 {/* Interactive Word Tokens */}
                 <div className="flex flex-wrap justify-center items-center gap-1.5 sm:gap-2 md:gap-2.5 max-w-3xl px-1 sm:px-2">
                   {parsedWords.map((token) => {
-                    const cleanKey = token.cleanWord.toLowerCase();
-                    const isDifficult = Boolean(story.difficultWords?.[cleanKey]);
+                    const isDifficult = Boolean(getDifficultWordChunks(token.cleanWord));
 
                     return (
                       <WordSpan
