@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Sparkles,
   Star,
@@ -11,6 +11,10 @@ import {
   Award,
   Search,
   Pencil,
+  Filter,
+  ChevronDown,
+  Check,
+  X,
 } from 'lucide-react';
 import { Profile, Story, ReadingProgress } from '../types';
 import { STORIES } from '../data/stories';
@@ -27,6 +31,27 @@ interface HomeProps {
   onEditProfile?: () => void;
 }
 
+interface FilterOption {
+  id: string;
+  label: string;
+  icon: string;
+  group: 'Reading Status' | 'Featured Series' | 'Themes & Topics';
+}
+
+const FILTER_OPTIONS: FilterOption[] = [
+  { id: 'All', label: 'All Stories', icon: '📚', group: 'Reading Status' },
+  { id: 'Unread', label: 'Unread', icon: '📖', group: 'Reading Status' },
+  { id: 'Completed', label: 'Completed', icon: '⭐', group: 'Reading Status' },
+  { id: 'Dr. Seuss', label: 'Dr. Seuss', icon: '🎩', group: 'Featured Series' },
+  { id: 'Elephant & Piggie', label: 'Elephant & Piggie', icon: '🐘', group: 'Featured Series' },
+  { id: 'Pout-Pout Fish', label: 'Pout-Pout Fish', icon: '🐟', group: 'Featured Series' },
+  { id: 'Animals', label: 'Animals', icon: '🦁', group: 'Themes & Topics' },
+  { id: 'Adventure', label: 'Adventure', icon: '🚀', group: 'Themes & Topics' },
+  { id: 'Magic & Fun', label: 'Magic & Fun', icon: '✨', group: 'Themes & Topics' },
+  { id: 'Everyday Life', label: 'Everyday Life', icon: '🏠', group: 'Themes & Topics' },
+  { id: 'Nature', label: 'Nature', icon: '🌿', group: 'Themes & Topics' },
+];
+
 export const Home: React.FC<HomeProps> = ({
   profile,
   onSelectStory,
@@ -36,29 +61,51 @@ export const Home: React.FC<HomeProps> = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const completedStoryIds = getCompletedStories(profile.id);
   const currentProgress = getProgress(profile.id);
+
+  // Close dropdown when clicking outside or pressing Escape
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   // Find in-progress story if any
   const inProgressStory = currentProgress
     ? STORIES.find((s) => s.id === currentProgress.storyId)
     : null;
 
-  const categories = [
-    'All',
-    'Unread',
-    'Completed',
-    'Elephant & Piggie',
-    'Pout-Pout Fish',
-    'Animals',
-    'Adventure',
-    'Magic & Fun',
-    'Everyday Life',
-    'Nature',
-  ];
+  // Helper to compute story count for any filter option
+  const getFilterCount = (catId: string): number => {
+    if (catId === 'All') return STORIES.length;
+    if (catId === 'Unread') return STORIES.filter((s) => !completedStoryIds.includes(s.id)).length;
+    if (catId === 'Completed') return completedStoryIds.length;
+    return STORIES.filter((s) => s.category === catId).length;
+  };
 
-  // Filter stories
+  // Currently active filter option object
+  const activeOption =
+    FILTER_OPTIONS.find((opt) => opt.id === selectedCategory) || FILTER_OPTIONS[0];
+
+  // Filter stories based on category and search query
   const filteredStories = STORIES.filter((story) => {
     // Search query match
     if (
@@ -204,30 +251,187 @@ export const Home: React.FC<HomeProps> = ({
           </div>
         )}
 
-        {/* Story Categories & Filter Bar */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-6">
-          {/* Category Tabs */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-none">
-            {categories.map((cat) => {
-              const isSelected = selectedCategory === cat;
-              return (
-                <button
-                  key={cat}
-                  type="button"
-                  id={`filter-cat-${cat.toLowerCase().replace(/\s+/g, '-')}`}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-4 py-2 rounded-full text-xs sm:text-sm font-black whitespace-nowrap transition cursor-pointer ${
-                    isSelected
-                      ? 'bg-[#FFD93D] text-[#4A4A4A] shadow-md border-2 border-[#FFD93D]'
-                      : 'bg-white hover:bg-[#FFF9E5] text-[#4A4A4A] border-2 border-[#FFD93D]/60'
+        {/* Story Filters & Search Controls */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-4">
+          {/* Category Dropdown Filter */}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              type="button"
+              id="category-filter-dropdown-btn"
+              onClick={() => setIsDropdownOpen((prev) => !prev)}
+              aria-haspopup="listbox"
+              aria-expanded={isDropdownOpen}
+              className="w-full sm:w-auto inline-flex items-center justify-between gap-2.5 px-4 py-2.5 rounded-2xl bg-white hover:bg-[#FFF9E5] text-[#4A4A4A] border-2 border-[#FFD93D] shadow-xs transition active:scale-[0.98] cursor-pointer"
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-xl bg-[#FFF9E5] border border-[#FFD93D] flex items-center justify-center text-sm shrink-0">
+                  <Filter className="w-3.5 h-3.5 text-[#4A4A4A]" />
+                </div>
+                <div className="flex items-center gap-1.5 text-left">
+                  <span className="text-base leading-none">{activeOption.icon}</span>
+                  <span className="text-sm font-black text-[#4A4A4A] tracking-tight">
+                    {activeOption.label}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 ml-2">
+                <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-100/70 text-[#4A4A4A] border border-amber-200/80">
+                  {getFilterCount(activeOption.id)}
+                </span>
+                <ChevronDown
+                  className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${
+                    isDropdownOpen ? 'rotate-180 text-[#4D96FF]' : ''
                   }`}
-                >
-                  {cat === 'Unread' && '📖 '}
-                  {cat === 'Completed' && '⭐ '}
-                  {cat}
-                </button>
-              );
-            })}
+                />
+              </div>
+            </button>
+
+            {/* Dropdown Menu Popover */}
+            {isDropdownOpen && (
+              <div
+                id="category-filter-menu"
+                role="listbox"
+                className="absolute left-0 top-full mt-2 w-full sm:w-80 max-h-[70vh] overflow-y-auto bg-white rounded-3xl border-3 border-[#FFD93D] shadow-2xl p-2 z-40 animate-in fade-in zoom-in-95 duration-150"
+              >
+                <div className="px-3 py-1.5 text-[11px] font-black uppercase tracking-wider text-slate-400 border-b border-amber-100 flex items-center justify-between">
+                  <span>Filter Stories</span>
+                  <span>{STORIES.length} Total</span>
+                </div>
+
+                {/* Group 1: Reading Status */}
+                <div className="mt-2 mb-1">
+                  <span className="px-3 py-1 block text-[10px] font-black uppercase tracking-wider text-slate-400">
+                    Reading Status
+                  </span>
+                  {FILTER_OPTIONS.filter((opt) => opt.group === 'Reading Status').map((opt) => {
+                    const isSelected = selectedCategory === opt.id;
+                    const count = getFilterCount(opt.id);
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        id={`filter-option-${opt.id.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                        onClick={() => {
+                          setSelectedCategory(opt.id);
+                          setIsDropdownOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-2xl text-xs sm:text-sm font-bold transition cursor-pointer mb-0.5 ${
+                          isSelected
+                            ? 'bg-[#FFD93D]/30 text-[#4A4A4A] font-black border border-[#FFD93D]'
+                            : 'hover:bg-amber-50 text-[#4A4A4A]'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-base">{opt.icon}</span>
+                          <span>{opt.label}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span
+                            className={`text-xs px-2 py-0.5 rounded-full ${
+                              isSelected
+                                ? 'bg-[#FFD93D] text-[#4A4A4A] font-black'
+                                : 'bg-slate-100 text-slate-600'
+                            }`}
+                          >
+                            {count}
+                          </span>
+                          {isSelected && <Check className="w-4 h-4 text-[#4D96FF] shrink-0" />}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Group 2: Featured Series & Authors */}
+                <div className="mt-2 mb-1 pt-1 border-t border-amber-100/70">
+                  <span className="px-3 py-1 block text-[10px] font-black uppercase tracking-wider text-slate-400">
+                    Featured Authors & Series
+                  </span>
+                  {FILTER_OPTIONS.filter((opt) => opt.group === 'Featured Series').map((opt) => {
+                    const isSelected = selectedCategory === opt.id;
+                    const count = getFilterCount(opt.id);
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        id={`filter-option-${opt.id.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                        onClick={() => {
+                          setSelectedCategory(opt.id);
+                          setIsDropdownOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-2xl text-xs sm:text-sm font-bold transition cursor-pointer mb-0.5 ${
+                          isSelected
+                            ? 'bg-[#FFD93D]/30 text-[#4A4A4A] font-black border border-[#FFD93D]'
+                            : 'hover:bg-amber-50 text-[#4A4A4A]'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-base">{opt.icon}</span>
+                          <span>{opt.label}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span
+                            className={`text-xs px-2 py-0.5 rounded-full ${
+                              isSelected
+                                ? 'bg-[#FFD93D] text-[#4A4A4A] font-black'
+                                : 'bg-slate-100 text-slate-600'
+                            }`}
+                          >
+                            {count}
+                          </span>
+                          {isSelected && <Check className="w-4 h-4 text-[#4D96FF] shrink-0" />}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Group 3: Themes & Topics */}
+                <div className="mt-2 mb-1 pt-1 border-t border-amber-100/70">
+                  <span className="px-3 py-1 block text-[10px] font-black uppercase tracking-wider text-slate-400">
+                    Themes & Topics
+                  </span>
+                  {FILTER_OPTIONS.filter((opt) => opt.group === 'Themes & Topics').map((opt) => {
+                    const isSelected = selectedCategory === opt.id;
+                    const count = getFilterCount(opt.id);
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        id={`filter-option-${opt.id.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                        onClick={() => {
+                          setSelectedCategory(opt.id);
+                          setIsDropdownOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-2xl text-xs sm:text-sm font-bold transition cursor-pointer mb-0.5 ${
+                          isSelected
+                            ? 'bg-[#FFD93D]/30 text-[#4A4A4A] font-black border border-[#FFD93D]'
+                            : 'hover:bg-amber-50 text-[#4A4A4A]'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-base">{opt.icon}</span>
+                          <span>{opt.label}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span
+                            className={`text-xs px-2 py-0.5 rounded-full ${
+                              isSelected
+                                ? 'bg-[#FFD93D] text-[#4A4A4A] font-black'
+                                : 'bg-slate-100 text-slate-600'
+                            }`}
+                          >
+                            {count}
+                          </span>
+                          {isSelected && <Check className="w-4 h-4 text-[#4D96FF] shrink-0" />}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Search box */}
@@ -238,11 +442,65 @@ export const Home: React.FC<HomeProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search stories..."
-              className="w-full pl-10 pr-4 py-2.5 text-sm rounded-full border-2 border-[#FFD93D] focus:border-[#4D96FF] bg-white text-[#4A4A4A] placeholder:text-slate-400 font-bold outline-none transition shadow-xs"
+              className="w-full pl-10 pr-9 py-2.5 text-sm rounded-2xl border-2 border-[#FFD93D] focus:border-[#4D96FF] bg-white text-[#4A4A4A] placeholder:text-slate-400 font-bold outline-none transition shadow-xs"
             />
             <Search className="w-4 h-4 text-[#FFD93D] absolute left-3.5 top-1/2 -translate-y-1/2" />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                title="Clear search"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer p-0.5"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
         </div>
+
+        {/* Active Filter Status & Clear Tag (when not 'All' or when searching) */}
+        {(selectedCategory !== 'All' || searchQuery.trim() !== '') && (
+          <div className="flex flex-wrap items-center gap-2 mb-6">
+            <span className="text-xs font-semibold text-slate-500">Active filter:</span>
+            {selectedCategory !== 'All' && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFD93D]/30 border border-[#FFD93D] text-xs font-black text-[#4A4A4A]">
+                <span>{activeOption.icon}</span>
+                <span>{activeOption.label}</span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedCategory('All')}
+                  className="hover:text-red-500 transition cursor-pointer ml-0.5"
+                  title="Remove category filter"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </span>
+            )}
+            {searchQuery.trim() !== '' && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-xs font-black text-blue-700">
+                <span>Keyword: &ldquo;{searchQuery}&rdquo;</span>
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="hover:text-red-500 transition cursor-pointer ml-0.5"
+                  title="Clear search"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedCategory('All');
+                setSearchQuery('');
+              }}
+              className="text-xs font-bold text-[#4D96FF] hover:underline cursor-pointer ml-1"
+            >
+              Reset all filters
+            </button>
+          </div>
+        )}
 
         {/* Stories Grid */}
         {filteredStories.length === 0 ? (
