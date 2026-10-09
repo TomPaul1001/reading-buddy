@@ -21,9 +21,9 @@ export const WordSpan: React.FC<WordSpanProps> = ({
   const isHighlighted = isSpokenInPage || isSingleSpoken;
 
   return (
-    <span className="inline-flex items-center relative my-1.5 mx-1 group">
+    <span className="inline-flex items-center relative my-1 mx-0.5 group">
       {token.punctuationBefore && (
-        <span className="text-[#4A4A4A] font-bold select-none mr-1 text-xl sm:text-2xl">
+        <span className="text-[#4A4A4A] font-bold select-none mr-0.5 text-lg sm:text-xl md:text-2xl">
           {token.punctuationBefore}
         </span>
       )}
@@ -37,9 +37,9 @@ export const WordSpan: React.FC<WordSpanProps> = ({
             ? `Click to sound out "${token.cleanWord}" chunk by chunk 🧩`
             : `Click to hear "${token.cleanWord}"`
         }
-        className={`inline-flex items-center justify-center px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-2xl transition-all duration-150 cursor-pointer select-none text-left active:scale-95 ${fontSizeClass} ${
+        className={`inline-flex items-center justify-center px-2.5 py-1 sm:px-3.5 sm:py-1.5 md:px-4 md:py-2 rounded-xl sm:rounded-2xl transition-all duration-150 cursor-pointer select-none text-left active:scale-95 ${fontSizeClass} ${
           isHighlighted
-            ? 'border-4 border-[#FFD93D] bg-[#FFF9E5] text-[#D4A017] font-black shadow-md scale-105 sm:scale-110 z-10 ring-2 ring-[#FFD93D]/60 animate-word-active'
+            ? 'border-3 sm:border-4 border-[#FFD93D] bg-[#FFF9E5] text-[#D4A017] font-black shadow-md scale-105 z-10 ring-2 ring-[#FFD93D]/60 animate-word-active'
             : isDifficult
             ? 'border-2 border-[#4D96FF]/40 bg-[#F0F7FF] text-[#4D96FF] font-black hover:bg-[#E2EFFF] hover:border-[#4D96FF] hover:scale-105 shadow-xs'
             : 'border-2 border-transparent bg-[#F0F7FF] text-[#4D96FF] font-bold hover:bg-[#E2EFFF] hover:border-[#4D96FF]/30 hover:scale-105 shadow-xs'
@@ -57,7 +57,7 @@ export const WordSpan: React.FC<WordSpanProps> = ({
       </button>
 
       {token.punctuationAfter && (
-        <span className="text-[#4A4A4A] font-bold select-none ml-1 text-xl sm:text-2xl">
+        <span className="text-[#4A4A4A] font-bold select-none ml-0.5 text-lg sm:text-xl md:text-2xl">
           {token.punctuationAfter}
         </span>
       )}

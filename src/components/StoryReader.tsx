@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { Story, Profile, ReadingSpeed, FontSizeMode } from '../types';
 import { parseWords, useSpeech, WordToken } from '../hooks/useSpeech';
+import { groupTokensIntoLines } from '../utils/textLayout';
 import { WordSpan } from './WordSpan';
 import { ChunkDialog } from './ChunkDialog';
 import { LegalModal, LegalDocType } from './LegalModal';
@@ -121,6 +122,12 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
     if (!currentPage) return [];
     return parseWords(currentPage.text);
   }, [currentPage]);
+
+  // Pedagogically group words into balanced 5-8 word lines with deliberate sentence breaks for early readers
+  const tokenLines = useMemo(() => {
+    if (!parsedWords || parsedWords.length === 0) return [];
+    return groupTokensIntoLines(parsedWords, story.readingLevel);
+  }, [parsedWords, story.readingLevel]);
 
   // Handle page turn & progress persistence
   const goToPage = useCallback(
@@ -240,22 +247,22 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   const getFontSizeClass = () => {
     switch (fontSize) {
       case 'medium':
-        return 'text-lg sm:text-xl md:text-2xl leading-relaxed';
+        return 'text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed';
       case 'xlarge':
-        return 'text-2xl sm:text-3xl md:text-4xl leading-relaxed sm:leading-loose';
+        return 'text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-relaxed sm:leading-loose';
       case 'large':
       default:
-        return 'text-xl sm:text-2xl md:text-3xl leading-relaxed';
+        return 'text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed';
     }
   };
 
   return (
-    <div className="h-screen max-h-[100dvh] min-h-[100dvh] bg-[#FFF9F0] flex flex-col justify-between p-2.5 sm:p-4 md:p-5 lg:p-6 font-sans selection:bg-[#FFD93D]/40 overflow-hidden">
+    <div className="h-screen max-h-[100dvh] min-h-[100dvh] bg-[#FFF9F0] flex flex-col justify-between p-2 sm:p-3 md:p-4 lg:p-5 font-sans selection:bg-[#FFD93D]/40 overflow-hidden">
       {/* Header Bar */}
-      <header className="max-w-5xl mx-auto w-full flex items-center justify-between gap-2 sm:gap-4 shrink-0 mb-2 sm:mb-3">
+      <header className="max-w-4xl mx-auto w-full flex items-center justify-between gap-2 sm:gap-4 shrink-0 mb-1.5 sm:mb-2 md:mb-3">
         {/* Reader Profile Pill */}
-        <div className="flex items-center gap-2 sm:gap-3 bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border-2 border-[#FFD93D] shadow-xs">
-          <div className="w-8 h-8 sm:w-9 sm:h-9 bg-[#FF8C8C] rounded-full flex items-center justify-center text-lg sm:text-xl shadow-inner">
+        <div className="flex items-center gap-2 sm:gap-3 bg-white px-2.5 sm:px-4 py-1 sm:py-1.5 md:py-2 rounded-full border-2 border-[#FFD93D] shadow-xs">
+          <div className="w-7 h-7 sm:w-9 sm:h-9 bg-[#FF8C8C] rounded-full flex items-center justify-center text-base sm:text-xl shadow-inner">
             {profile.avatar}
           </div>
           <div className="flex flex-col">
@@ -330,7 +337,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
               setFontSize((prev) => (prev === 'medium' ? 'large' : prev === 'large' ? 'xlarge' : 'medium'));
             }}
             title="Adjust text size"
-            className="bg-white px-2.5 sm:px-3 py-1.5 rounded-full border-2 border-[#4D96FF] text-[#4D96FF] font-bold text-xs sm:text-sm shadow-xs hover:bg-[#F0F7FF] transition cursor-pointer flex items-center gap-1"
+            className="bg-white px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full border-2 border-[#4D96FF] text-[#4D96FF] font-bold text-xs sm:text-sm shadow-xs hover:bg-[#F0F7FF] transition cursor-pointer flex items-center gap-1"
           >
             <Type className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             <span>{fontSize === 'medium' ? 'A' : fontSize === 'large' ? 'A+' : 'A++'}</span>
@@ -345,7 +352,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
               onBackToHome();
             }}
             title="Back to Library"
-            className="bg-[#FF6B6B] hover:bg-[#f85757] w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center text-white text-base sm:text-xl shadow-md active:scale-95 transition cursor-pointer"
+            className="bg-[#FF6B6B] hover:bg-[#f85757] w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center text-white text-sm sm:text-lg md:text-xl shadow-md active:scale-95 transition cursor-pointer"
           >
             ✕
           </button>
@@ -353,16 +360,16 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
       </header>
 
       {/* Main Story Stage Card */}
-      <div className="max-w-5xl mx-auto w-full flex-1 min-h-0 flex flex-col items-center justify-between">
-        <section className="w-full h-full flex flex-col items-center justify-between bg-white rounded-[24px] sm:rounded-[36px] md:rounded-[44px] border-4 sm:border-6 md:border-8 border-[#FFD93D] shadow-xl p-3.5 sm:p-5 md:p-6 relative min-h-0">
+      <div className="max-w-4xl mx-auto w-full flex-1 min-h-0 flex flex-col items-center justify-between">
+        <section className="w-full h-full flex flex-col items-center justify-between bg-white rounded-[20px] sm:rounded-[32px] md:rounded-[40px] border-4 sm:border-6 md:border-8 border-[#FFD93D] shadow-xl p-3 sm:p-5 md:p-6 pt-6 sm:pt-8 md:pt-9 relative min-h-0">
           {/* Floating Story Title Badge */}
-          <div className="absolute -top-3.5 sm:-top-4.5 left-4 sm:left-8 bg-[#4D96FF] text-white px-3.5 sm:px-5 py-1 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm md:text-base shadow-md flex items-center gap-1.5 sm:gap-2">
+          <div className="absolute -top-3 sm:-top-4 left-3.5 sm:left-7 bg-[#4D96FF] text-white px-3 sm:px-4.5 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm md:text-base shadow-md flex items-center gap-1.5 sm:gap-2 z-10">
             <span>{story.icon}</span>
             <span>{story.title}</span>
           </div>
 
           {/* Center Illustration & Words Section with subtle digital book slide animation */}
-          <div className="flex-1 min-h-0 w-full flex flex-col items-center justify-center my-auto overflow-hidden relative px-1">
+          <div className="flex-1 min-h-0 w-full flex flex-col items-center justify-start overflow-hidden relative px-1">
             <AnimatePresence mode="wait" custom={direction} initial={false}>
               <motion.div
                 key={currentPageIndex}
@@ -376,31 +383,45 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                   opacity: { duration: 0.18 },
                   scale: { duration: 0.18 },
                 }}
-                className="w-full flex-1 flex flex-col items-center justify-center overflow-y-auto px-1 py-1"
+                className="w-full flex-1 min-h-0 flex flex-col items-center justify-start overflow-y-auto px-1 sm:px-2 pt-2 sm:pt-4 pb-4 overscroll-contain"
               >
+                {/* Visual Scene Anchor */}
                 {currentPage.sceneEmoji && (
-                  <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-2 sm:mb-3 md:mb-4 animate-soft-bounce select-none shrink-0">
+                  <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-1 sm:mb-2 md:mb-3 animate-soft-bounce select-none shrink-0">
                     {currentPage.sceneEmoji}
                   </div>
                 )}
 
-                {/* Interactive Word Tokens */}
-                <div className="flex flex-wrap justify-center items-center gap-1.5 sm:gap-2 md:gap-2.5 max-w-3xl px-1 sm:px-2">
-                  {parsedWords.map((token) => {
-                    const isDifficult = Boolean(getDifficultWordChunks(token.cleanWord));
+                {/* Pedagogically Formatted Text Block:
+                    - Constrained max-width (max-w-lg / max-w-xl / max-w-2xl) to prevent edge-to-edge eye fatigue on tablet/wide screens
+                    - Left-aligned, ragged-right typography (avoiding justified text and uneven gaps)
+                    - Short line lengths (~5-8 words per line)
+                    - Deliberate sentence rhythm for early readers
+                    - No stranded orphan words
+                */}
+                <div className="w-full max-w-lg sm:max-w-xl md:max-w-2xl mx-auto flex flex-col items-start text-left px-2 sm:px-4 py-1">
+                  {tokenLines.map((lineTokens, lineIdx) => (
+                    <div
+                      key={`line-${lineIdx}`}
+                      className="w-full flex flex-wrap justify-start items-center text-left leading-relaxed mb-1 sm:mb-1.5 last:mb-0"
+                    >
+                      {lineTokens.map((token) => {
+                        const isDifficult = Boolean(getDifficultWordChunks(token.cleanWord));
 
-                    return (
-                      <WordSpan
-                        key={token.id}
-                        token={token}
-                        isDifficult={isDifficult}
-                        isSpokenInPage={currentWordIndex === token.id}
-                        isSingleSpoken={singleWordActiveIndex === token.id}
-                        onWordClick={handleWordClick}
-                        fontSizeClass={getFontSizeClass()}
-                      />
-                    );
-                  })}
+                        return (
+                          <WordSpan
+                            key={token.id}
+                            token={token}
+                            isDifficult={isDifficult}
+                            isSpokenInPage={currentWordIndex === token.id}
+                            isSingleSpoken={singleWordActiveIndex === token.id}
+                            onWordClick={handleWordClick}
+                            fontSizeClass={getFontSizeClass()}
+                          />
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
               </motion.div>
             </AnimatePresence>
